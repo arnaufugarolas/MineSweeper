@@ -1,0 +1,9 @@
+# Default ignored files
+/.idea/shelf/
+/.idea/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Node related files
+/node_modules/
+/yarn.lock
+/package-lock.json

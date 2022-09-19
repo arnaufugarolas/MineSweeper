@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@cucumber/cucumber": "^8.5.3",
+    "@playwright/test": "^1.25.2",
+    "eslint": "^8.23.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.5",
+    "eslint-plugin-promise": "^6.0.1",
+    "playwright": "^1.25.2"
+  },
+  "scripts": {
+    "test:e2e": "cucumber-js --require cucumber.conf.js --require tests/steps/**/*.steps.js --tags \"not @Manual\" --parallel 4",
+    "test:e2e:single": "cucumber-js --require cucumber.conf.js --require tests/steps/**/*.steps.js --tags \"@Single\" --parallel 4"
+  }
+}
