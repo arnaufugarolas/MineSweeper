@@ -6,6 +6,9 @@ const url = 'http://localhost:8080/MineSweeper/'
 Given(/^a user opens the app$/, async () => {
     await page.goto(url)
 })
+Given(/^a board like: (.*)$/, async () => {
+    return 'pending'
+})
 When(/^the user question the cell at: \((.*), (.*)\)$/, async () => {
     return 'pending'
 })
