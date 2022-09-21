@@ -1,7 +1,7 @@
 const { Given, When, Then } = require('@cucumber/cucumber')
 const { expect } = require('@playwright/test')
 
-const url = 'http://localhost:8080/MineSweeper/'
+const url = 'http://localhost:8080/MineSweeper/index.html'
 
 Given(/^a user opens the app$/, async () => {
     await page.goto(url)
