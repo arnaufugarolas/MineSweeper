@@ -6,75 +6,102 @@ const url = 'http://localhost:8080/MineSweeper/index.html'
 Given(/^a user opens the app$/, async () => {
     await page.goto(url)
 })
-Given(/^a board like: (.*)$/, async () => {
-    return 'pending'
+When(/^the user opens the app$/, function () {
+
 })
-When(/^the user question the cell at: \((.*), (.*)\)$/, async () => {
-    return 'pending'
+Then(/^the value of the remaining flags counter should be: (.*)$/, function () {
+
 })
-When(/^the user remove the flag from the cell at: \((.*), (.*)\)$/, async () => {
-    return 'pending'
+Then(/^the value of the timer should be: (\d+)$/, function () {
+
 })
-When(/^the user click the smiley$/, async () => {
-    return 'pending'
+When(/^the user starts a new game with a board like: (.*)$/, function () {
+
 })
-When(/^the user remove the question from the cell at: \((.*), (.*)\)$/, async () => {
-    return 'pending'
+When(/^the user starts a new game with a random board of: (.*)$/, function () {
+
 })
-When(/^the user reveal the cell at: \((.*), (.*)\)$/, async () => {
-    return 'pending'
+Then(/^no cells should be exposed$/, function () {
+
 })
-When(/^the user flag the cell at: \((.*), (.*)\)$/, async () => {
-    return 'pending'
+Then(/^no cells should be flagged$/, function () {
+
 })
-Then(/^the value of the timer should be: (\d+)$/, async () => {
-    return 'pending'
+Then(/^no cells should be questioned$/, function () {
+
 })
-Then(/^the value of the flags counter should be: (\d+)$/, async () => {
-    return 'pending'
+Given(/^a board like: (.*)$/, function () {
+
 })
-Then(/^no cells should be exposed$/, async () => {
-    return 'pending'
+When(/^the user reveal the cell at: \(\d+, \d+\)$/, function () {
+
 })
-Then(/^no cells should be flagged$/, async () => {
-    return 'pending'
+Then(/^the cell at: \(\d+, \d+\) should be revealed$/, function () {
+
 })
-Then(/^no cells should be questioned$/, async () => {
-    return 'pending'
+Then(/^the cell at: \(\d+, \d+\) should be a mine$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) should be revealed$/, async () => {
-    return 'pending'
+Then(/^the game should be lost$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) should be a mine$/, async () => {
-    return 'pending'
+Then(/^the game should be won$/, function () {
+
 })
-Then(/^the game should be lost$/, async () => {
-    return 'pending'
+Given(/^a board like: (.*)$/, function () {
+
 })
-Then(/^the game should be won$/, async () => {
-    return 'pending'
+When(/^the user reveal the cell at: \(\d+, \d+\)$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) should have a: (.*)$/, async () => {
-    return 'pending'
+Then(/^the cell at: \(\d+, \d+\) should have a: void$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) should be flagged$/, async () => {
-    return 'pending'
+Then(/^all the cells around: \(\d+, \d+\) should be revealed$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) should be unFlagged$/, async () => {
-    return 'pending'
+Given(/^a board like: (.*)$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) shouldn't be questioned$/, async () => {
-    return 'pending'
+Then(/^the cell at: \((.*), (.*)\) should have a: (.*)$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) should be questioned$/, async () => {
-    return 'pending'
+When(/^the user flag the cell at: \(\d+, \d+\)$/, function () {
+
 })
-Then(/^the game should be restarted$/, async () => {
-    return 'pending'
+Then(/^the cell at: \(\d+, \d+\) should be flagged$/, function () {
+
 })
-Then(/^the cell at: \((.*), (.*)\) shouldn't be flagged$/, async () => {
-    return 'pending'
+Given(/^the cell at: \(\d+, \d+\) is flagged$/, function () {
+
 })
-Then(/^all the cells around: \((.*), (.*)\) should be revealed$/, async () => {
-    return 'pending'
+When(/^the user remove the flag from the cell at: \(\d+, \d+\)$/, function () {
+
+})
+Then(/^the cell at: \(\d+, \d+\) should be unFlagged$/, function () {
+
+})
+When(/^the user question the cell at: \(\d+, \d+\)$/, function () {
+
+})
+Then(/^the cell at: \(\d+, \d+\) should be questioned$/, function () {
+
+})
+Given(/^the cell at: \(\d+, \d+\) is questioned$/, function () {
+
+})
+When(/^the user remove the question from the cell at: \(\d+, \d+\)$/, function () {
+
+})
+Then(/^the cell at: \(\d+, \d+\) shouldn't be questioned$/, function () {
+
+})
+When(/^the user click the smiley$/, function () {
+
+})
+Then(/^the game should be restarted$/, function () {
+
+})
+Then(/^the cell at: \(\d+, \d+\) shouldn't be flagged$/, function () {
+
 })
