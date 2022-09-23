@@ -7,91 +7,94 @@ Given(/^a user opens the app$/, async () => {
     await page.goto(url)
 })
 Given(/^a board like: (.*)$/, async (board) => {
-    return 'pass'
+    return 'pending'
 })
 Given(/^a board like:$/, async (board) => {
-    return 'pass'
+    return 'pending'
 })
 Given(/^the cell at: \((\d+), (\d+)\) is flagged$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Given(/^a random board of: (.*)$/, async (size) => {
-    return 'pass'
+    return 'pending'
 })
 
 When(/^the user reveal the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 When(/^the user flag the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 When(/^the user click the smiley$/, async () => {
-    return 'pass'
+    return 'pending'
 })
 When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 
 Then(/^no cells should be exposed$/, async () => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^no cells should be flagged$/, async () => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^no cells should be questioned$/, async () => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the game should be lost$/, async () => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the game should be won$/, async () => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the game should be restarted$/, async () => {
-    return 'pass'
+    return 'pending'
+})
+Then(/^there shouldn't be any cell in the board$/, async () => {
+    return 'pending'
 })
 Then(/^the value of the timer should be: (\d+)$/, async (timer) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the value of the remaining flags counter should be: (\d+)$/, async (counter) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be a mine$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) should have a: (.*)$/, async (row, column, value) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be flagged$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be revealed$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^the board should be$/, async (table) => {
-    return 'pass'
+    return 'pending'
 })
 Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (row, column) => {
-    return 'pass'
+    return 'pending'
 })
