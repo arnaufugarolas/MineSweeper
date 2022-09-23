@@ -26,6 +26,7 @@ Feature: Minesweeper
     And the value of the timer should be: 0
     And there shouldn't be any cell in the board
 
+  @Working
   Scenario: the game loads with mock data
     Given a board generated with this mock data: MOM^MOM^MOM
     Then the board should be
