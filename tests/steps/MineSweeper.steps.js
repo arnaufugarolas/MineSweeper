@@ -7,7 +7,7 @@ Given(/^a user opens the app$/, async () => {
     await page.goto(url)
 })
 Given(/^a board generated with this mock data: (.*)$/, async (board) => {
-    return 'pending'
+    await page.goto(`${url}?mock=${board}`)
 })
 Given(/^a board like:$/, async (board) => {
     return 'pending'
@@ -100,7 +100,29 @@ Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (row, column
     return 'pending'
 })
 Then(/^the board should be$/, async (table) => {
-    return 'pending'
+    const board = await page.locator('[data-test-id="board"]')
+    const rows = await board.locator('.row')
+    const numberOfCellsForRow = await rows.last().locator('.cell').count()
+    const expectedBoard = table.split('\n')
+
+    for (let row = 0; row < expectedBoard.length; row++) {
+        expectedBoard[row] = expectedBoard[row].replace(/[^a-zA-Z]+/g, '')
+    }
+
+    for (let i = 0; i < await rows.count; i++) {
+        for (let j = 0; j < numberOfCellsForRow; j++) {
+            const cell = await rows.nth(i).locator('.cell').nth(j)
+            const cellClass = await cell.getAttribute('class')
+            if (expectedBoard[i][j] === 'M') {
+                expect(cellClass).toContain('cellMined')
+            } else {
+                expect(cellClass).not.toContain('cellMined')
+            }
+        }
+    }
+
+    expect(await rows.count()).toBe(expectedBoard.length) // check number of rows
+    expect(numberOfCellsForRow).toBe(expectedBoard[0].length) // check number of columns
 })
 Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (row, column) => {
     return 'pending'
