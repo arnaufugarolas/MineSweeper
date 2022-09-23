@@ -20,7 +20,7 @@ Feature: Minesweeper
   Background:
     Given a user opens the app
 
-  Scenario: the game load without mock data and without a random map
+  Scenario: Default display screen without mock data and without a random map
     Then the value of the remaining flags counter should be: 0
     And the value of the timer should be: 0
     And there shouldn't be any cell in the board
