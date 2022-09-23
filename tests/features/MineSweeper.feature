@@ -20,6 +20,7 @@ Feature: Minesweeper
   Background:
     Given a user opens the app
 
+  @Finished
   Scenario: Default display screen without mock data and without a random map
     Then the value of the remaining flags counter should be: 0
     And the value of the timer should be: 0
