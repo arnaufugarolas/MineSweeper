@@ -60,13 +60,20 @@ Then(/^the game should be restarted$/, async () => {
     return 'pending'
 })
 Then(/^there shouldn't be any cell in the board$/, async () => {
-    return 'pending'
+    const board = await page.locator('[data-test-id="board"]')
+    const numberOfCells = await board.locator('.cell').count()
+
+    expect(numberOfCells).toBe(0)
 })
 Then(/^the value of the timer should be: (\d+)$/, async (timer) => {
-    return 'pending'
+    const timerValue = await page.locator('[data-test-id="timer"]').innerText()
+
+    expect(parseInt(timerValue)).toBe(timer)
 })
 Then(/^the value of the remaining flags counter should be: (\d+)$/, async (counter) => {
-    return 'pending'
+    const flagCounterValue = await page.locator('[data-test-id="flagsCounter"]').innerText()
+
+    expect(parseInt(flagCounterValue)).toBe(counter)
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be a mine$/, async (row, column) => {
     return 'pending'

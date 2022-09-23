@@ -97,26 +97,8 @@ Feature: Minesweeper
     Then the cell at: (2, 2) should have a: void
     And all the cells around: (2, 2) should be revealed
 
-  Scenario: A cell with 0 mines around it reveal the cells around it recursively only if they have 0 mines around them
-    Given a board like:
-      """
-        | O  O  O  O  O |
-        | O  O  O  O  O |
-        | O  O  O  O  O |
-        | O  O  O  O  O |
-        | O  O  O  M  O |
-        | O  O  O  O  O |
-      """
-    When the user reveal the cell at: (2, 2)
-    Then the board should be
-      """
-        | E  E  E  E  E |
-        | E  E  E  E  E |
-        | E  E  E  E  E |
-        | E  E  E  E  E |
-        | E  E  E  M  H |
-        | E  E  E  H  H |
-      """
+    Scenario: a cell is revealed by a neighbor cell
+
 
   Scenario Outline: the user reveal a cell with (1...8) mine around it
     Given a board generated with this mock data: <board>
