@@ -6,7 +6,7 @@ const url = 'http://localhost:8080/MineSweeper/index.html'
 Given(/^a user opens the app$/, async () => {
     await page.goto(url)
 })
-Given(/^a board like: (.*)$/, async (board) => {
+Given(/^a board generated with this mock data: (.*)$/, async (board) => {
     return 'pending'
 })
 Given(/^a board like:$/, async (board) => {
