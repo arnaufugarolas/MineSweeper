@@ -6,102 +6,92 @@ const url = 'http://localhost:8080/MineSweeper/index.html'
 Given(/^a user opens the app$/, async () => {
     await page.goto(url)
 })
-When(/^the user opens the app$/, function () {
-
+Given(/^a board like: (.*)$/, async (board) => {
+    return 'pass'
 })
-Then(/^the value of the remaining flags counter should be: (.*)$/, function () {
-
+Given(/^a board like:$/, async (board) => {
+    return 'pass'
 })
-Then(/^the value of the timer should be: (\d+)$/, function () {
-
+Given(/^the cell at: \((\d+), (\d+)\) is flagged$/, async (row, column) => {
+    return 'pass'
 })
-When(/^the user starts a new game with a board like: (.*)$/, function () {
-
+Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (row, column) => {
+    return 'pass'
 })
-When(/^the user starts a new game with a random board of: (.*)$/, function () {
-
+Given(/^a random board of: (.*)$/, async (size) => {
+    return 'pass'
 })
-Then(/^no cells should be exposed$/, function () {
 
+When(/^the user reveal the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+    return 'pass'
 })
-Then(/^no cells should be flagged$/, function () {
-
+When(/^the user flag the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+    return 'pass'
 })
-Then(/^no cells should be questioned$/, function () {
-
+When(/^the user click the smiley$/, async () => {
+    return 'pass'
 })
-Given(/^a board like: (.*)$/, function () {
-
+When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+    return 'pass'
 })
-When(/^the user reveal the cell at: \(\d+, \d+\)$/, function () {
-
+When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+    return 'pass'
 })
-Then(/^the cell at: \(\d+, \d+\) should be revealed$/, function () {
-
+When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+    return 'pass'
 })
-Then(/^the cell at: \(\d+, \d+\) should be a mine$/, function () {
 
+Then(/^no cells should be exposed$/, async () => {
+    return 'pass'
 })
-Then(/^the game should be lost$/, function () {
-
+Then(/^no cells should be flagged$/, async () => {
+    return 'pass'
 })
-Then(/^the game should be won$/, function () {
-
+Then(/^no cells should be questioned$/, async () => {
+    return 'pass'
 })
-Given(/^a board like: (.*)$/, function () {
-
+Then(/^the game should be lost$/, async () => {
+    return 'pass'
 })
-When(/^the user reveal the cell at: \(\d+, \d+\)$/, function () {
-
+Then(/^the game should be won$/, async () => {
+    return 'pass'
 })
-Then(/^the cell at: \(\d+, \d+\) should have a: void$/, function () {
-
+Then(/^the game should be restarted$/, async () => {
+    return 'pass'
 })
-Then(/^all the cells around: \(\d+, \d+\) should be revealed$/, function () {
-
+Then(/^the value of the timer should be: (\d+)$/, async (timer) => {
+    return 'pass'
 })
-Given(/^a board like: (.*)$/, function () {
-
+Then(/^the value of the remaining flags counter should be: (\d+)$/, async (counter) => {
+    return 'pass'
 })
-Then(/^the cell at: \((.*), (.*)\) should have a: (.*)$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) should be a mine$/, async (row, column) => {
+    return 'pass'
 })
-When(/^the user flag the cell at: \(\d+, \d+\)$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) should have a: (.*)$/, async (row, column, value) => {
+    return 'pass'
 })
-Then(/^the cell at: \(\d+, \d+\) should be flagged$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (row, column) => {
+    return 'pass'
 })
-Given(/^the cell at: \(\d+, \d+\) is flagged$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be flagged$/, async (row, column) => {
+    return 'pass'
 })
-When(/^the user remove the flag from the cell at: \(\d+, \d+\)$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (row, column) => {
+    return 'pass'
 })
-Then(/^the cell at: \(\d+, \d+\) should be unFlagged$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (row, column) => {
+    return 'pass'
 })
-When(/^the user question the cell at: \(\d+, \d+\)$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) should be revealed$/, async (row, column) => {
+    return 'pass'
 })
-Then(/^the cell at: \(\d+, \d+\) should be questioned$/, function () {
-
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (row, column) => {
+    return 'pass'
 })
-Given(/^the cell at: \(\d+, \d+\) is questioned$/, function () {
-
+Then(/^the board should be$/, async (table) => {
+    return 'pass'
 })
-When(/^the user remove the question from the cell at: \(\d+, \d+\)$/, function () {
-
-})
-Then(/^the cell at: \(\d+, \d+\) shouldn't be questioned$/, function () {
-
-})
-When(/^the user click the smiley$/, function () {
-
-})
-Then(/^the game should be restarted$/, function () {
-
-})
-Then(/^the cell at: \(\d+, \d+\) shouldn't be flagged$/, function () {
-
+Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (row, column) => {
+    return 'pass'
 })
