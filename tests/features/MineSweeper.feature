@@ -68,6 +68,7 @@ Feature: Minesweeper
     Then the cell at: (2, 2) should have a: void
     And all the cells around: (2, 2) should be revealed
 
+  @Finished
   Scenario Outline: the user reveal a cell with (1...8) mine around it
     Given a board generated with this mock data: <board>
     When the user reveal the cell at: (2, 2)
