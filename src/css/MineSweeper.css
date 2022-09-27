@@ -1,0 +1,8 @@
+.cell {
+    background-color: #000000;
+    color: red;
+}
+
+.cellExposed {
+    background-color: #FFFFFF; !important
+}

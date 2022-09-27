@@ -17,6 +17,9 @@ window.addEventListener('load', function () {
 })
 
 class MineSweeper {
+    /**
+     * @param gameOptions {Map} - The game options object.
+     */
     constructor (gameOptions) {
         const s = this
 
@@ -51,6 +54,9 @@ class MineSweeper {
         s._smiley.textContent = 'Bored'
     }
 
+    /**
+     * @param data {String} - a string of characters that represent the board.
+     */
     _createBoardFromMockData (data) {
         const s = this
         const rows = data.split('^')
@@ -79,6 +85,9 @@ class MineSweeper {
         s._flagsCounter.textContent = numberOfMines.toString()
     }
 
+    /**
+     * @returns {String} The status of the game.
+     */
     _checkGameStatus () {
         const s = this
         const exposedCells = document.getElementsByClassName('cellExposed')
@@ -101,29 +110,20 @@ class MineSweeper {
     }
 
     /**
-     * @param s {MineSweeper}
-     * @this {HTMLButtonElement}
+     * @param cell {HTMLButtonElement} - The cell that we want to get the neighbours of.
+     * @returns {HTMLButtonElement[]} An array of the neighbours of the cell.
      */
-    _cellClickHandler (s) {
-        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-            this.classList.add('cellExposed')
-            console.log(s._getCellNeighbours(this))
-            console.log('click')
-        }
-    }
-
     _getCellNeighbours (cell) {
         const s = this
-        const cellRows = cell.parentNode.parentNode.parentNode
         const cellRow = cell.parentNode.parentNode
         const cellColumn = cell.parentNode
-        const cellRowNumber = cellRow.rowIndex
+        const cellRowNumber = cellRow.rowIndex - 1
         const cellColumnNumber = cellColumn.cellIndex
         const neighbours = []
 
-        console.log('\ncellRow: ', cellRow, '\ncellColumn: ', cellColumn, '\ncellRowNumber: ', cellRowNumber, '\ncellCoulumnNumber:', cellColumnNumber, '\nCellRowns: ', cellRows)
-        for (let i = -1; i <= 2; i++) {
-            for (let j = -1; j <= 2; j++) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (i === 0 && j === 0) { continue }
                 const row = cellRowNumber + i
                 const column = cellColumnNumber + j
 
@@ -134,5 +134,31 @@ class MineSweeper {
         }
 
         return neighbours
+    }
+
+    /**
+     * @param s {MineSweeper}
+     * @this {HTMLButtonElement}
+     */
+    _cellClickHandler (s) {
+        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
+            const neighbours = s._getCellNeighbours(this)
+            let numberOfMinedNeighbours = 0
+
+            for (const neighbour of neighbours) {
+                if (neighbour.classList.contains('cellMined')) {
+                    numberOfMinedNeighbours++
+                }
+            }
+            this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
+            if (numberOfMinedNeighbours === 0) {
+                for (const neighbour of neighbours) {
+                    neighbour.classList.add('cellExposed')
+                }
+            }
+
+            this.classList.add('cellExposed')
+            s._gameStatus = s._checkGameStatus()
+        }
     }
 }
