@@ -36,6 +36,7 @@ Feature: Minesweeper
         | M  O  M |
       """
 
+  @Finished
   Scenario: Default display screen with mocked board: remaining flags counter and timer
     Given a board generated with this mock data: MMM^MOM^MOO
     Then the value of the remaining flags counter should be: 6

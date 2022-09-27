@@ -19,6 +19,9 @@ window.addEventListener('load', function () {
 class MineSweeper {
     constructor (gameOptions) {
         this._gameOptions = gameOptions
+        this._game = document.getElementById('mineSweeper')
+        this._board = this._game.getElementById('board')
+        this._flagsCounter = this._game.getElementById('flagsCounter')
     }
 
     init () {
@@ -38,7 +41,7 @@ class MineSweeper {
 
     _createBoardFromMockData (data) {
         const rows = data.split('^')
-        const boardHtml = document.getElementById('board')
+        let numberOfMines = 0
 
         for (const row of rows) {
             const tr = document.createElement('tr')
@@ -49,12 +52,14 @@ class MineSweeper {
                 let classList = 'cell'
                 if (column === 'M') {
                     classList += ' cellMined'
+                    numberOfMines++
                 }
                 cell.setAttribute('class', classList)
                 cell.textContent = '\xa0'
                 tr.appendChild(cell)
             }
-            boardHtml.appendChild(tr)
+            this._board.appendChild(tr)
         }
+        this._flagsCounter.textContent = numberOfMines.toString()
     }
 }
