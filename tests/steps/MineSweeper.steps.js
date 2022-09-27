@@ -42,13 +42,16 @@ When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async 
 })
 
 Then(/^no cells should be exposed$/, async () => {
-    return 'pending'
+    const exposedCells = await page.locator('.cellExposed')
+    expect(await exposedCells.count()).toBe(0)
 })
 Then(/^no cells should be flagged$/, async () => {
-    return 'pending'
+    const flaggedCells = await page.locator('.cellFlagged')
+    expect(await flaggedCells.count()).toBe(0)
 })
 Then(/^no cells should be questioned$/, async () => {
-    return 'pending'
+    const questionedCells = await page.locator('.cellQuestioned')
+    expect(await questionedCells.count()).toBe(0)
 })
 Then(/^the game should be lost$/, async () => {
     return 'pending'
