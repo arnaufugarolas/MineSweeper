@@ -153,7 +153,7 @@ class MineSweeper {
             this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
             if (numberOfMinedNeighbours === 0) {
                 for (const neighbour of neighbours) {
-                    neighbour.classList.add('cellExposed')
+                    neighbour.click()
                 }
             }
 
