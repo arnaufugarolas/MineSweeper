@@ -18,32 +18,40 @@ window.addEventListener('load', function () {
 
 class MineSweeper {
     constructor (gameOptions) {
-        this._gameOptions = gameOptions
-        this._board = document.getElementById('board')
-        this._flagsCounter = document.getElementById('flagsCounter')
-        this._timer = document.getElementById('timer')
+        const s = this
+
+        s._gameOptions = gameOptions
+        s._board = document.getElementById('board')
+        s._flagsCounter = document.getElementById('flagsCounter')
+        s._timer = document.getElementById('timer')
+        s._smiley = document.getElementById('smiley')
     }
 
     init () {
-        this._createBoard()
+        const s = this
+
+        s._createBoard()
     }
 
     _createBoard () {
-        const boardType = this._gameOptions.get('boardType')
-        const data = this._gameOptions.get('data')
+        const s = this
+        const boardType = s._gameOptions.get('boardType')
+        const data = s._gameOptions.get('data')
 
         switch (boardType) {
             case 'mock':
-                this._createBoardFromMockData(data)
+                s._createBoardFromMockData(data)
                 break
             case 'default':
-                this._flagsCounter.textContent = '0'
+                s._flagsCounter.textContent = '0'
                 break
         }
-        this._timer.textContent = '0'
+        s._timer.textContent = '0'
+        s._smiley.textContent = 'Bored'
     }
 
     _createBoardFromMockData (data) {
+        const s = this
         const rows = data.split('^')
         let numberOfMines = 0
 
@@ -52,18 +60,39 @@ class MineSweeper {
             tr.setAttribute('class', 'row')
 
             for (const column of row) {
-                const cell = document.createElement('td').appendChild(document.createElement('button'))
-                let classList = 'cell'
+                const td = document.createElement('td')
+                const cell = document.createElement('button')
+                cell.classList.add('cell')
                 if (column === 'M') {
-                    classList += ' cellMined'
+                    cell.classList.add('cellMined')
                     numberOfMines++
                 }
-                cell.setAttribute('class', classList)
                 cell.textContent = '\xa0'
-                tr.appendChild(cell)
+                cell.addEventListener('click', function () {
+                    const gameStatus = s._checkGameStatus()
+                    if (gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
+                        this.classList.add('cellExposed')
+                    }
+                    s._checkGameStatus()
+                })
+                td.appendChild(cell)
+                tr.appendChild(td)
             }
-            this._board.appendChild(tr)
+            s._board.appendChild(tr)
         }
-        this._flagsCounter.textContent = numberOfMines.toString()
+        s._flagsCounter.textContent = numberOfMines.toString()
+    }
+
+    _checkGameStatus () {
+        const s = this
+        const exposedCells = document.getElementsByClassName('cellExposed')
+
+        for (const cell of exposedCells) {
+            if (cell.classList.contains('cellMined')) {
+                s._smiley.textContent = 'Sad'
+                return 'lost'
+            }
+        }
+        return 'playing'
     }
 }
