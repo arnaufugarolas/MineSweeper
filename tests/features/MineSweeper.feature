@@ -61,11 +61,12 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 2)
     Then the game should be won
 
+  @Working
   Scenario: the user reveal a cell with 0 mines around it
     Given a board generated with this mock data: OOOOO^OOOOO^OOOOM
     When the user reveal the cell at: (2, 2)
     Then the cell at: (2, 2) should have a: void
-    And all the cells around: (2, 2) should be revealed
+    And all the cells around: (3, 5) should be revealed
 
   Scenario: a cell is revealed by a neighbor cell
 

@@ -31,6 +31,7 @@ class MineSweeper {
         const s = this
 
         s._createBoard()
+        s._gameStatus = 'playing'
     }
 
     _createBoard () {
@@ -62,19 +63,14 @@ class MineSweeper {
             for (const column of row) {
                 const td = document.createElement('td')
                 const cell = document.createElement('button')
+
+                cell.textContent = '\xa0'
                 cell.classList.add('cell')
                 if (column === 'M') {
                     cell.classList.add('cellMined')
                     numberOfMines++
                 }
-                cell.textContent = '\xa0'
-                cell.addEventListener('click', function () {
-                    const gameStatus = s._checkGameStatus()
-                    if (gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-                        this.classList.add('cellExposed')
-                    }
-                    s._checkGameStatus()
-                })
+                cell.addEventListener('click', s._cellClickHandler.bind(cell, s))
                 td.appendChild(cell)
                 tr.appendChild(td)
             }
@@ -102,5 +98,41 @@ class MineSweeper {
         }
 
         return 'playing'
+    }
+
+    /**
+     * @param s {MineSweeper}
+     * @this {HTMLButtonElement}
+     */
+    _cellClickHandler (s) {
+        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
+            this.classList.add('cellExposed')
+            console.log(s._getCellNeighbours(this))
+            console.log('click')
+        }
+    }
+
+    _getCellNeighbours (cell) {
+        const s = this
+        const cellRows = cell.parentNode.parentNode.parentNode
+        const cellRow = cell.parentNode.parentNode
+        const cellColumn = cell.parentNode
+        const cellRowNumber = cellRow.rowIndex
+        const cellColumnNumber = cellColumn.cellIndex
+        const neighbours = []
+
+        console.log('\ncellRow: ', cellRow, '\ncellColumn: ', cellColumn, '\ncellRowNumber: ', cellRowNumber, '\ncellCoulumnNumber:', cellColumnNumber, '\nCellRowns: ', cellRows)
+        for (let i = -1; i <= 2; i++) {
+            for (let j = -1; j <= 2; j++) {
+                const row = cellRowNumber + i
+                const column = cellColumnNumber + j
+
+                if (row >= 0 && row < s._board.rows.length && column >= 0 && column < s._board.rows[row].cells.length) {
+                    neighbours.push(s._board.rows[row].cells[column].firstChild)
+                }
+            }
+        }
+
+        return neighbours
     }
 }
