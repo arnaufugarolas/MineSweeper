@@ -4,7 +4,7 @@ const { expect } = require('@playwright/test')
 const url = 'http://localhost:8080/MineSweeper/index.html'
 
 Given(/^a user opens the app$/, async () => {
-    await page.goto(url)
+    await page.goto(url, { waitUntil: 'load' })
 })
 Given(/^a board generated with this mock data: (.*)$/, async (board) => {
     await page.goto(`${url}?mock=${board}`)
@@ -22,8 +22,12 @@ Given(/^a random board of: (.*)$/, async (size) => {
     return 'pending'
 })
 
-When(/^the user reveal the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pending'
+When(/^the user reveal the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
+    const board = await page.locator('[data-test-id="board"]')
+    const row = await board.locator('tr').nth(rowNumber - 1)
+    const cell = await row.locator('td button').nth(columnNumber - 1)
+
+    await cell.click()
 })
 When(/^the user flag the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
     return 'pending'
@@ -54,7 +58,8 @@ Then(/^no cells should be questioned$/, async () => {
     expect(await questionedCells.count()).toBe(0)
 })
 Then(/^the game should be lost$/, async () => {
-    return 'pending'
+    const smiley = await page.locator('[data-test-id="smiley"]')
+    expect(await smiley.textContent()).toBe('Sad')
 })
 Then(/^the game should be won$/, async () => {
     return 'pending'

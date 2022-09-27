@@ -51,9 +51,8 @@ Feature: Minesweeper
 
   Scenario: the user reveal a cell that is a mine and lose the game
     Given a board generated with this mock data: MO
-    When the user reveal the cell at: (1, 2)
-    Then the cell at: (1, 2) should be a mine
-    And the game should be lost
+    When the user reveal the cell at: (1, 1)
+    Then the game should be lost
 
   Scenario: the user reveal all the noneMine cells and win the game
     Given a board generated with this mock data: MO
@@ -67,7 +66,6 @@ Feature: Minesweeper
     And all the cells around: (2, 2) should be revealed
 
   Scenario: a cell is revealed by a neighbor cell
-
 
   Scenario Outline: the user reveal a cell with (1...8) mine around it
     Given a board generated with this mock data: <board>
