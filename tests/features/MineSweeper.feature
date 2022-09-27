@@ -49,41 +49,6 @@ Feature: Minesweeper
     And no cells should be flagged
     And no cells should be questioned
 
-  Scenario: the game loads with random generation
-    Given a random board of: 8x8
-    Then the board should be
-      """
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-        | H  H  H  H  H  H  H  H |
-      """
-
-  Scenario Outline: Default display screen with random scenarios: remaining flags counter and timer
-    Given a random board of: <size>
-    Then the value of the remaining flags counter should be: <remainingFlags>
-    And the value of the timer should be: 0
-    Examples:
-      | size  | remainingFlags |
-      | 8x8   | 10             |
-      | 16x16 | 40             |
-      | 30x16 | 99             |
-
-  Scenario Outline: Default display screen with random scenarios: cells states
-    Given a random board of: <size>
-    Then no cells should be exposed
-    And no cells should be flagged
-    And no cells should be questioned
-    Examples:
-      | size  |
-      | 8x8   |
-      | 16x16 |
-      | 30x16 |
-
   Scenario: the user reveal a cell that is a mine and lose the game
     Given a board generated with this mock data: MO
     When the user reveal the cell at: (1, 2)
@@ -101,7 +66,7 @@ Feature: Minesweeper
     Then the cell at: (2, 2) should have a: void
     And all the cells around: (2, 2) should be revealed
 
-    Scenario: a cell is revealed by a neighbor cell
+  Scenario: a cell is revealed by a neighbor cell
 
 
   Scenario Outline: the user reveal a cell with (1...8) mine around it
@@ -156,3 +121,38 @@ Feature: Minesweeper
   Scenario: the user click the smiley to restart the game
     When the user click the smiley
     Then the game should be restarted
+
+  Scenario: the game loads with random generation
+    Given a random board of: 8x8
+    Then the board should be
+      """
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+        | H  H  H  H  H  H  H  H |
+      """
+
+  Scenario Outline: Default display screen with random scenarios: remaining flags counter and timer
+    Given a random board of: <size>
+    Then the value of the remaining flags counter should be: <remainingFlags>
+    And the value of the timer should be: 0
+    Examples:
+      | size  | remainingFlags |
+      | 8x8   | 10             |
+      | 16x16 | 40             |
+      | 30x16 | 99             |
+
+  Scenario Outline: Default display screen with random scenarios: cells states
+    Given a random board of: <size>
+    Then no cells should be exposed
+    And no cells should be flagged
+    And no cells should be questioned
+    Examples:
+      | size  |
+      | 8x8   |
+      | 16x16 |
+      | 30x16 |
