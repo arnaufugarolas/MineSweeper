@@ -42,6 +42,7 @@ Feature: Minesweeper
     Then the value of the remaining flags counter should be: 6
     And the value of the timer should be: 0
 
+  @Finished
   Scenario: Default display screen with mocked board: cells states
     Given a board generated with this mock data: MMM^MOM^MOO
     Then no cells should be exposed
