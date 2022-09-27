@@ -86,6 +86,8 @@ class MineSweeper {
     _checkGameStatus () {
         const s = this
         const exposedCells = document.getElementsByClassName('cellExposed')
+        const numberOfMines = document.getElementsByClassName('cellMined').length
+        const numberOfCells = document.getElementsByClassName('cell').length
 
         for (const cell of exposedCells) {
             if (cell.classList.contains('cellMined')) {
@@ -93,6 +95,12 @@ class MineSweeper {
                 return 'lost'
             }
         }
+
+        if (exposedCells.length === numberOfCells - numberOfMines) {
+            s._smiley.textContent = 'Happy'
+            return 'win'
+        }
+
         return 'playing'
     }
 }

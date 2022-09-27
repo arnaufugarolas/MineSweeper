@@ -49,11 +49,13 @@ Feature: Minesweeper
     And no cells should be flagged
     And no cells should be questioned
 
+  @Finished
   Scenario: the user reveal a cell that is a mine and lose the game
     Given a board generated with this mock data: MO
     When the user reveal the cell at: (1, 1)
     Then the game should be lost
 
+  @Finished
   Scenario: the user reveal all the noneMine cells and win the game
     Given a board generated with this mock data: MO
     When the user reveal the cell at: (1, 2)

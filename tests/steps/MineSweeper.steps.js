@@ -59,10 +59,13 @@ Then(/^no cells should be questioned$/, async () => {
 })
 Then(/^the game should be lost$/, async () => {
     const smiley = await page.locator('[data-test-id="smiley"]')
+
     expect(await smiley.textContent()).toBe('Sad')
 })
 Then(/^the game should be won$/, async () => {
-    return 'pending'
+    const smiley = await page.locator('[data-test-id="smiley"]')
+
+    expect(await smiley.textContent()).toBe('Happy')
 })
 Then(/^the game should be restarted$/, async () => {
     return 'pending'
