@@ -3,6 +3,32 @@ const { expect } = require('@playwright/test')
 
 const url = 'http://localhost:8080/MineSweeper/index.html'
 
+async function getCell (rowNumber, columnNumber) {
+    const board = await page.locator('[data-test-id="board"]')
+    const row = await board.locator('tr').nth(rowNumber - 1)
+    const cell = await row.locator('td button').nth(columnNumber - 1)
+
+    if (rowNumber - 1 < 0) { return null }
+    if (columnNumber - 1 < 0) { return null }
+    if (await cell.count() === 1) { return cell }
+
+    return null
+}
+
+async function getCellsAround (rowNumber, columnNumber) {
+    const cells = []
+
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i !== 0 || j !== 0) {
+                const cell = await getCell(rowNumber + i, columnNumber + j)
+                if (cell !== null) { cells.push(cell) }
+            }
+        }
+    }
+
+    return cells
+}
 Given(/^a user opens the app$/, async () => {
     await page.goto(url, { waitUntil: 'load' })
 })
@@ -23,9 +49,7 @@ Given(/^a random board of: (.*)$/, async (size) => {
 })
 
 When(/^the user reveal the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
-    const board = await page.locator('[data-test-id="board"]')
-    const row = await board.locator('tr').nth(rowNumber - 1)
-    const cell = await row.locator('td button').nth(columnNumber - 1)
+    const cell = await getCell(rowNumber, columnNumber)
 
     await cell.click()
 })
@@ -89,8 +113,14 @@ Then(/^the value of the remaining flags counter should be: (\d+)$/, async (count
 Then(/^the cell at: \((\d+), (\d+)\) should be a mine$/, async (row, column) => {
     return 'pending'
 })
-Then(/^the cell at: \((\d+), (\d+)\) should have a: (.*)$/, async (row, column, value) => {
-    return 'pending'
+Then(/^the cell at: \((\d+), (\d+)\) should have a: (.*)$/, async (rowNumber, columnNumber, value) => {
+    const cell = await getCell(rowNumber, columnNumber)
+    const cellValue = await cell.innerText()
+    if (value === 'void') {
+        expect(cellValue).toBe('\xa0')
+    } else {
+        expect(cellValue).toBe(value.toString())
+    }
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (row, column) => {
     return 'pending'
@@ -135,6 +165,10 @@ Then(/^the board should be$/, async (table) => {
     expect(await rows.count()).toBe(expectedBoard.length) // check number of rows
     expect(numberOfCellsForRow).toBe(expectedBoard[0].length) // check number of columns
 })
-Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (row, column) => {
-    return 'pending'
+Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (rowNumber, columnNumber) => {
+    const cellsAround = await getCellsAround(rowNumber, columnNumber)
+    for (const cell of cellsAround) {
+        const cellClass = await cell.getAttribute('class')
+        expect(cellClass).toContain('cellExposed')
+    }
 })
