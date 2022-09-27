@@ -19,9 +19,9 @@ window.addEventListener('load', function () {
 class MineSweeper {
     constructor (gameOptions) {
         this._gameOptions = gameOptions
-        this._game = document.getElementById('mineSweeper')
-        this._board = this._game.getElementById('board')
-        this._flagsCounter = this._game.getElementById('flagsCounter')
+        this._board = document.getElementById('board')
+        this._flagsCounter = document.getElementById('flagsCounter')
+        this._timer = document.getElementById('timer')
     }
 
     init () {
@@ -36,7 +36,11 @@ class MineSweeper {
             case 'mock':
                 this._createBoardFromMockData(data)
                 break
+            case 'default':
+                this._flagsCounter.textContent = '0'
+                break
         }
+        this._timer.textContent = '0'
     }
 
     _createBoardFromMockData (data) {
