@@ -4,8 +4,8 @@ const { expect } = require('@playwright/test')
 const url = 'http://localhost:8080/MineSweeper/index.html'
 
 /**
- * @param rowNumber {int}- The row number of the cell you want to get.
- * @param columnNumber {int} - The column number of the cell you want to click.
+ * @param rowNumber {number}- The row number of the cell you want to get.
+ * @param columnNumber {number} - The column number of the cell you want to click.
  * @returns {Promise<Locator>} A promise that resolves to a cell
  */
 async function getCell (rowNumber, columnNumber) {
@@ -20,8 +20,8 @@ async function getCell (rowNumber, columnNumber) {
 }
 
 /**
- * @param rowNumber {int} - The row number of the cell you want to get the neighbors of.
- * @param columnNumber {int} - The column number of the cell you want to get the neighbors of.
+ * @param rowNumber {number} - The row number of the cell you want to get the neighbors of.
+ * @param columnNumber {number} - The column number of the cell you want to get the neighbors of.
  * @returns {Promise<Locator[]>} An array of cells
  */
 async function getCellsAround (rowNumber, columnNumber) {
@@ -41,8 +41,8 @@ async function getCellsAround (rowNumber, columnNumber) {
 
 /**
  * It checks if an array contains another array
- * @param superset {int[][]}
- * @param subset {int[]}
+ * @param superset {number[][]}
+ * @param subset {number[]}
  * @returns {Promise<boolean>}
  */
 async function checkIfArrayContainsArray (superset, subset) {
@@ -55,16 +55,15 @@ async function checkIfArrayContainsArray (superset, subset) {
 }
 
 /**
- * @param rowNumber {int} - The row number of the cell that was clicked.
- * @param columnNumber {int} - The column number of the cell that was clicked.
- * @param visitedCells {int[][]} - This is an array of cells that have already been visited. This is used to prevent infinite
+ * @param rowNumber {number} - The row number of the cell that was clicked.
+ * @param columnNumber {number} - The column number of the cell that was clicked.
+ * @param visitedCells {number[][]} - This is an array of cells that have already been visited. This is used to prevent infinite
  * recursion.
  */
 async function checkRevealRecursive (rowNumber, columnNumber, visitedCells) {
     for (let i = -1; i <= 1; i++) {
         for (let j = -1; j <= 1; j++) {
             if (await checkIfArrayContainsArray(visitedCells, [(rowNumber + i), (columnNumber + j)])) { continue }
-
             const cell = await getCell((rowNumber + i), (columnNumber + j))
             if (cell === null) { continue }
 
@@ -79,14 +78,25 @@ async function checkRevealRecursive (rowNumber, columnNumber, visitedCells) {
 }
 
 /**
- * @param rowNumber {int} - The row number of the cell you want to check.
- * @param columnNumber {int} - The column number of the cell you want to check.
+ * @param rowNumber {number} - The row number of the cell you want to check.
+ * @param columnNumber {number} - The column number of the cell you want to check.
  * @returns {Promise<boolean>} A boolean value.
  */
 async function cellIsFlagged (rowNumber, columnNumber) {
     const cell = await getCell(rowNumber, columnNumber)
 
     return (await cell.getAttribute('class')).includes('cellFlagged')
+}
+
+/**
+ * @param rowNumber {number} - The row number of the cell you want to check.
+ * @param columnNumber {number} - The column number of the cell you want to check.
+ * @returns {Promise<boolean>} A boolean value.
+ */
+async function cellIsQuestioned (rowNumber, columnNumber) {
+    const cell = await getCell(rowNumber, columnNumber)
+
+    return (await cell.getAttribute('class')).includes('cellQuestioned')
 }
 
 /**
@@ -129,10 +139,15 @@ When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (row
         await cell.click({ button: 'right' })
     }
 })
-When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pending'
+When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
+    const cell = await getCell(rowNumber, columnNumber)
+    if ((await cell.getAttribute('class')).includes('cellFlagged')) {
+        await cell.click({ button: 'right' })
+    } else {
+        await cell.dblclick({ button: 'right' })
+    }
 })
-When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
     return 'pending'
 })
 When(/^the user click the smiley$/, async () => {
@@ -232,10 +247,10 @@ Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (rowNumber, colu
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be flagged$/, async (rowNumber, columnNumber) => {
     expect(await cellIsFlagged(rowNumber, columnNumber)).toBe(false)
 })
-Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (row, column) => {
-    return 'pending'
+Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (rowNumber, columnNumber) => {
+    expect(await cellIsQuestioned(rowNumber, columnNumber)).toBe(true)
 })
-Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (row, column) => {
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (rowNumber, columnNumber) => {
     return 'pending'
 })
 Then(/^the game should be restarted$/, async () => {
