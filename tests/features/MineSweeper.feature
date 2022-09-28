@@ -84,8 +84,14 @@ Feature: Minesweeper
       | MMM^MOM^MMO | 7           |
       | MMM^MOM^MMM | 8           |
 
+  @Finished
   Scenario: a cell is revealed by a neighbor cell
+    Given a board generated with this mock data: OOOOO^OOOOO^OOOOM
+    When the user reveal the cell at: (2, 2)
+    Then the cell at: (2, 2) should have a: void
+    And all the cells around: (2, 2) should be revealed recursively
 
+  @Finished
   Scenario: the user flag a cell
     Given a board generated with this mock data: MO
     When the user flag the cell at: (1, 2)
@@ -95,6 +101,12 @@ Feature: Minesweeper
     Given a board generated with this mock data: MO
     And the cell at: (1, 2) is flagged
     When the user remove the flag from the cell at: (1, 2)
+    Then the cell at: (1, 2) shouldn't be flagged
+
+  Scenario: the user reveal a cell that is flagged
+    Given a board generated with this mock data: MO
+    And the cell at: (1, 2) is flagged
+    When the user reveal the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be flagged
 
   Scenario: the user question a cell
@@ -107,12 +119,6 @@ Feature: Minesweeper
     And the cell at: (1, 2) is questioned
     When the user remove the question from the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be questioned
-
-  Scenario: the user reveal a cell that is flagged
-    Given a board generated with this mock data: MO
-    And the cell at: (1, 2) is flagged
-    When the user reveal the cell at: (1, 2)
-    Then the cell at: (1, 2) shouldn't be flagged
 
   Scenario: the user reveal a cell that is questioned
     Given a board generated with this mock data: MO
