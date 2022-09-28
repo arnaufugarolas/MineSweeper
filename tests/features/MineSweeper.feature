@@ -111,6 +111,7 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be flagged
 
+  @Finished
   Scenario: the user question a cell
     Given a board generated with this mock data: MO
     When the user question the cell at: (1, 2)
@@ -166,3 +167,5 @@ Feature: Minesweeper
       | 8x8   |
       | 16x16 |
       | 30x16 |
+
+    #TODO check flag counter

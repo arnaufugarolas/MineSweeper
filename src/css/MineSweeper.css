@@ -10,3 +10,7 @@
 .cellFlagged {
     background-color: red;
 }
+
+.cellQuestioned {
+    background-color: yellow;
+}

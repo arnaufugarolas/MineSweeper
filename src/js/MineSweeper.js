@@ -175,7 +175,10 @@ class MineSweeper {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             if (this.classList.contains('cellFlagged')) {
                 this.classList.remove('cellFlagged')
+                this.classList.add('cellQuestioned')
                 s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
+            } else if (this.classList.contains('cellQuestioned')) {
+                this.classList.remove('cellQuestioned')
             } else {
                 this.classList.add('cellFlagged')
                 s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) - 1).toString()
