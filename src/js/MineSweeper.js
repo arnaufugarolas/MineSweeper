@@ -76,7 +76,8 @@ class MineSweeper {
                     cell.classList.add('cellMined')
                     numberOfMines++
                 }
-                cell.addEventListener('click', s._cellClickHandler.bind(cell, s))
+                s._cellEventHandler(cell)
+
                 td.appendChild(cell)
                 tr.appendChild(td)
             }
@@ -140,7 +141,7 @@ class MineSweeper {
      * @param s {MineSweeper}
      * @this {HTMLButtonElement}
      */
-    _cellClickHandler (s) {
+    _cellLeftClickHandler (s) {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             const neighbours = s._getCellNeighbours(this)
             let numberOfMinedNeighbours = 0
@@ -160,5 +161,35 @@ class MineSweeper {
             this.classList.add('cellExposed')
             s._gameStatus = s._checkGameStatus()
         }
+    }
+
+    /**
+     * @param s {this} - the game object
+     * @this {HTMLButtonElement}
+     */
+    _cellRightClickHandler (s) {
+        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
+            if (this.classList.contains('cellFlagged')) {
+                this.classList.remove('cellFlagged')
+                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
+            } else {
+                this.classList.add('cellFlagged')
+                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) - 1).toString()
+            }
+        }
+    }
+
+    /**
+     * @param cell {HTMLButtonElement} - the cell that the event handler is being added to
+     */
+    _cellEventHandler (cell) {
+        const s = this
+
+        cell.addEventListener('click', s._cellLeftClickHandler.bind(cell, s))
+
+        cell.addEventListener('contextmenu', async function (e) {
+            e.preventDefault()
+            await s._cellRightClickHandler.bind(cell, s)(e)
+        })
     }
 }
