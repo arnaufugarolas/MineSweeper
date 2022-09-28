@@ -97,6 +97,7 @@ Feature: Minesweeper
     When the user flag the cell at: (1, 2)
     Then the cell at: (1, 2) should be flagged
 
+  @Finished
   Scenario: the user remove a flag
     Given a board generated with this mock data: MO
     And the cell at: (1, 2) is flagged
