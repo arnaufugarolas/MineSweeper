@@ -117,6 +117,7 @@ Feature: Minesweeper
     When the user question the cell at: (1, 2)
     Then the cell at: (1, 2) should be questioned
 
+  @Finished
   Scenario: the user remove a question
     Given a board generated with this mock data: MO
     And the cell at: (1, 2) is questioned

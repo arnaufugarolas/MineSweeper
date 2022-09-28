@@ -114,7 +114,9 @@ Given(/^the cell at: \((\d+), (\d+)\) is flagged$/, async (rowNumber, columnNumb
     await cell.click({ button: 'right' })
 })
 Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (rowNumber, columnNumber) => {
-    return 'pending'
+    const cell = await getCell(rowNumber, columnNumber)
+
+    await cell.dblclick({ button: 'right' })
 })
 Given(/^a random board of: (.*)$/, async (size) => {
     return 'pending'
@@ -136,7 +138,7 @@ When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (row
     const cell = await getCell(rowNumber, columnNumber)
 
     if ((await cell.getAttribute('class')).includes('cellFlagged')) {
-        await cell.click({ button: 'right' })
+        await cell.dblclick({ button: 'right' })
     }
 })
 When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
@@ -148,7 +150,11 @@ When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (rowNumber, colu
     }
 })
 When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
-    return 'pending'
+    const cell = await getCell(rowNumber, columnNumber)
+
+    if ((await cell.getAttribute('class')).includes('cellQuestioned')) {
+        await cell.click({ button: 'right' })
+    }
 })
 When(/^the user click the smiley$/, async () => {
     return 'pending'
@@ -251,7 +257,7 @@ Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (rowNumber, c
     expect(await cellIsQuestioned(rowNumber, columnNumber)).toBe(true)
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (rowNumber, columnNumber) => {
-    return 'pending'
+    expect(await cellIsQuestioned(rowNumber, columnNumber)).toBe(false)
 })
 Then(/^the game should be restarted$/, async () => {
     return 'pending'
