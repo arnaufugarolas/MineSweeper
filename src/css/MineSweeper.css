@@ -6,3 +6,7 @@
 .cellExposed {
     background-color: #FFFFFF; !important
 }
+
+.cellFlagged {
+    background-color: red;
+}

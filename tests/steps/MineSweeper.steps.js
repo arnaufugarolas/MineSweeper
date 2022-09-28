@@ -104,8 +104,10 @@ When(/^the user reveal the cell at: \((\d+), (\d+)\)$/, async (rowNumber, column
 
     await cell.click()
 })
-When(/^the user flag the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pending'
+When(/^the user flag the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
+    const cell = await getCell(rowNumber, columnNumber)
+
+    await cell.click({ button: 'right' })
 })
 When(/^the user click the smiley$/, async () => {
     return 'pending'
@@ -207,11 +209,10 @@ Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (rowNu
 Then(/^all the cells around: \((\d+), (\d+)\) should be revealed recursively$/, async (rowNumber, columnNumber) => {
     await checkRevealRecursive(rowNumber, columnNumber, [[rowNumber, columnNumber]])
 })
-Then(/^the game should be restarted$/, async () => {
-    return 'pending'
-})
-Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (row, column) => {
-    return 'pending'
+Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (rowNumber, columnNumber) => {
+    const cell = await getCell(rowNumber, columnNumber)
+
+    expect(await cell.getAttribute('class')).toContain('cellFlagged')
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be flagged$/, async (row, column) => {
     return 'pending'
@@ -220,5 +221,8 @@ Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (row, column)
     return 'pending'
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (row, column) => {
+    return 'pending'
+})
+Then(/^the game should be restarted$/, async () => {
     return 'pending'
 })
