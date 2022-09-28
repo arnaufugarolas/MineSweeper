@@ -79,6 +79,17 @@ async function checkRevealRecursive (rowNumber, columnNumber, visitedCells) {
 }
 
 /**
+ * @param rowNumber {int} - The row number of the cell you want to check.
+ * @param columnNumber {int} - The column number of the cell you want to check.
+ * @returns {Promise<boolean>} A boolean value.
+ */
+async function cellIsFlagged (rowNumber, columnNumber) {
+    const cell = await getCell(rowNumber, columnNumber)
+
+    return (await cell.getAttribute('class')).includes('cellFlagged')
+}
+
+/**
  * Given
  */
 Given(/^a user opens the app$/, async () => {
@@ -87,10 +98,12 @@ Given(/^a user opens the app$/, async () => {
 Given(/^a board generated with this mock data: (.*)$/, async (board) => {
     await page.goto(`${url}?mock=${board}`, { waitUntil: 'load' })
 })
-Given(/^the cell at: \((\d+), (\d+)\) is flagged$/, async (row, column) => {
-    return 'pending'
+Given(/^the cell at: \((\d+), (\d+)\) is flagged$/, async (rowNumber, columnNumber) => {
+    const cell = await getCell(rowNumber, columnNumber)
+
+    await cell.click({ button: 'right' })
 })
-Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (row, column) => {
+Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (rowNumber, columnNumber) => {
     return 'pending'
 })
 Given(/^a random board of: (.*)$/, async (size) => {
@@ -109,16 +122,20 @@ When(/^the user flag the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNu
 
     await cell.click({ button: 'right' })
 })
-When(/^the user click the smiley$/, async () => {
-    return 'pending'
-})
-When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
-    return 'pending'
+When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
+    const cell = await getCell(rowNumber, columnNumber)
+
+    if ((await cell.getAttribute('class')).includes('cellFlagged')) {
+        await cell.click({ button: 'right' })
+    }
 })
 When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
     return 'pending'
 })
 When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async (row, column) => {
+    return 'pending'
+})
+When(/^the user click the smiley$/, async () => {
     return 'pending'
 })
 /**
@@ -210,12 +227,10 @@ Then(/^all the cells around: \((\d+), (\d+)\) should be revealed recursively$/, 
     await checkRevealRecursive(rowNumber, columnNumber, [[rowNumber, columnNumber]])
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (rowNumber, columnNumber) => {
-    const cell = await getCell(rowNumber, columnNumber)
-
-    expect(await cell.getAttribute('class')).toContain('cellFlagged')
+    expect(await cellIsFlagged(rowNumber, columnNumber)).toBe(true)
 })
-Then(/^the cell at: \((\d+), (\d+)\) shouldn't be flagged$/, async (row, column) => {
-    return 'pending'
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be flagged$/, async (rowNumber, columnNumber) => {
+    expect(await cellIsFlagged(rowNumber, columnNumber)).toBe(false)
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (row, column) => {
     return 'pending'
