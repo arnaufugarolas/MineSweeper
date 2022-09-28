@@ -104,6 +104,7 @@ Feature: Minesweeper
     When the user remove the flag from the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be flagged
 
+  @Finished
   Scenario: the user reveal a cell that is flagged
     Given a board generated with this mock data: MO
     And the cell at: (1, 2) is flagged

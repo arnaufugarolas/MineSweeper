@@ -159,12 +159,16 @@ class MineSweeper {
             }
 
             this.classList.add('cellExposed')
+            if (this.classList.contains('cellFlagged')) {
+                this.classList.remove('cellFlagged')
+                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
+            }
             s._gameStatus = s._checkGameStatus()
         }
     }
 
     /**
-     * @param s {this} - the game object
+     * @param s {MineSweeper} - the game object
      * @this {HTMLButtonElement}
      */
     _cellRightClickHandler (s) {
