@@ -112,6 +112,19 @@ Feature: Minesweeper
     Then the cell at: (1, 2) shouldn't be flagged
 
   @Finished
+  Scenario: the user flag a cell and the remaining flags counter decreases
+    Given a board generated with this mock data: MOMO
+    When the user flag the cell at: (1, 2)
+    Then the value of the remaining flags counter should be: 1
+
+  @Finished
+  Scenario: the user remove a flag from a cell and the remaining flags counter increases
+    Given a board generated with this mock data: MOMO
+    And the cell at: (1, 2) is flagged
+    When the user remove the flag from the cell at: (1, 2)
+    Then the value of the remaining flags counter should be: 2
+
+  @Finished
   Scenario: the user question a cell
     Given a board generated with this mock data: MO
     When the user question the cell at: (1, 2)
@@ -131,22 +144,13 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be questioned
 
-  Scenario the user flag a cell and the remaining flags counter decreases
-    Given a board generated with this mock data: MOMO
-    When the user flag the cell at: (1, 2)
-    Then the value of the remaining flags counter should be: 1
-
-  Scenario: the user remove a flag from a cell and the remaining flags counter increases
-    Given a board generated with this mock data: MOMO
-    And the cell at: (1, 2) is flagged
-    When the user remove the flag from the cell at: (1, 2)
-    Then the value of the remaining flags counter should be: 2
-
+  @Finished
   Scenario: the user question a cell and the remaining flags counter doesn't change
     Given a board generated with this mock data: MOMO
     When the user question the cell at: (1, 2)
     Then the value of the remaining flags counter should be: 2
 
+  @Finished
   Scenario: the user remove a question from a cell and the remaining flags counter doesn't change
     Given a board generated with this mock data: MOMO
     And the cell at: (1, 2) is questioned
