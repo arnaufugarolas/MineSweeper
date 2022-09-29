@@ -262,3 +262,6 @@ Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (rowNumber
 Then(/^the game should be restarted$/, async () => {
     return 'pending'
 })
+Then(/^there should be: (\d+) mines$/, async () => {
+    return 'pending'
+})

@@ -195,3 +195,12 @@ Feature: Minesweeper
       | 8x8   |
       | 16x16 |
       | 30x16 |
+
+  Scenario Outline: the game loads with random generation: number of mines
+    Given a random board of: <size>
+    Then there should be: <mines> mines
+    Examples:
+      | size  | mines |
+      | 8x8   | 10    |
+      | 16x16 | 40    |
+      | 30x16 | 99    |
