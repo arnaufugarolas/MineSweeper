@@ -28,6 +28,7 @@ class MineSweeper {
         s._flagsCounter = document.getElementById('flagsCounter')
         s._timer = document.getElementById('timer')
         s._smiley = document.getElementById('smiley')
+        s._gameStatus = 'playing'
     }
 
     init () {
@@ -162,6 +163,8 @@ class MineSweeper {
             if (this.classList.contains('cellFlagged')) {
                 this.classList.remove('cellFlagged')
                 s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
+            } else if (this.classList.contains('cellQuestioned')) {
+                this.classList.remove('cellQuestioned')
             }
             s._gameStatus = s._checkGameStatus()
         }
