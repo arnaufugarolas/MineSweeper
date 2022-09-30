@@ -85,6 +85,13 @@ Feature: Minesweeper
     Then the cell at: (1, 2) shouldn't be questioned
 
   @Finished
+  Scenario: the user do the firsts click action (reveal, flag or question a cell), the timer should start counting
+    Given a board generated with this mock data: OMO
+    When the user reveal the cell at: (1, 1)
+    And the user wait 2 seconds
+    Then the value of the timer should be: 2
+
+  @Finished
   Scenario: the user reveal a cell that is a mine and lose the game: the timer should stop counting
     Given a board generated with this mock data: MOMO
     When the user reveal the cell at: (1, 2)
@@ -138,13 +145,6 @@ Feature: Minesweeper
       | 0  0  0  1  H |
       | 0  0  0  1  H |
     """
-
-  @Finished
-  Scenario: the user do the firsts click action (reveal, flag or question a cell), the timer should start counting
-    Given a board generated with this mock data: OMO
-    When the user reveal the cell at: (1, 1)
-    And the user wait 2 seconds
-    Then the value of the timer should be: 2
 
   @Finished
   Scenario: the user flag a cell
