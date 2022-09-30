@@ -84,6 +84,15 @@ Feature: Minesweeper
     And the user question the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be questioned
 
+  @Working
+  Scenario: the user reveal a cell that is a mine and lose the game: the timer should stop counting
+    Given a board generated with this mock data: MOMO
+    When the user reveal the cell at: (1, 2)
+    And the user wait 1 seconds
+    And the user reveal the cell at: (1, 1)
+    And the user wait 1 seconds
+    Then the value of the timer should be: 1
+
   @Finished
   Scenario: the user reveal all the noneMine cells and win the game
     Given a board generated with this mock data: MO
@@ -136,15 +145,6 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 1)
     And the user wait 2 seconds
     Then the value of the timer should be: 2
-
-  @Working
-  Scenario: the user lose the game, the timer should stop counting
-    Given a board generated with this mock data: MOMO
-    When the user reveal the cell at: (1, 2)
-    And the user wait 1 seconds
-    And the user reveal the cell at: (1, 1)
-    And the user wait 1 seconds
-    Then the value of the timer should be: 1
 
   @Finished
   Scenario: the user flag a cell
