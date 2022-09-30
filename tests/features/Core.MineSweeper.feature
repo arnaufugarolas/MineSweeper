@@ -245,11 +245,11 @@ Feature: Minesweeper
     When the user click the smiley
     Then no cells should be questioned
 
-  @TODO #TODO When the user clicks the smiley the game should be restarted and the timer should be reset
+  @Finished
   Scenario: the user click the smiley to restart the game: the timer should be reset
     Given a board generated with this mock data: MOMO
     When the user reveal the cell at: (1, 2)
-    And the user wait 5 seconds
+    And the user wait 2 seconds
     And the user click the smiley
     Then the value of the timer should be: 0
 
