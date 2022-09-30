@@ -40,42 +40,6 @@ async function getCellsAround (rowNumber, columnNumber) {
 }
 
 /**
- * @param superset {number[][]}
- * @param subset {number[]}
- * @returns {Promise<boolean>}
- */
-async function checkIfArrayContainsArray (superset, subset) {
-    for (const element of superset) {
-        if (element[0] === subset[0] && element[1] === subset[1]) {
-            return true
-        }
-    }
-    return false
-}
-
-/**
- * @param rowNumber {number}
- * @param columnNumber {number}
- * @param visitedCells {number[][]}
- */
-async function checkRevealRecursive (rowNumber, columnNumber, visitedCells) {
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            if (await checkIfArrayContainsArray(visitedCells, [(rowNumber + i), (columnNumber + j)])) { continue }
-            const cell = await getCell((rowNumber + i), (columnNumber + j))
-            if (cell === null) { continue }
-
-            expect(await cell.getAttribute('class')).toContain('cellExposed')
-
-            if (await cell.innerText() === '\xa0') {
-                visitedCells.push([(rowNumber + i), (columnNumber + j)])
-                await checkRevealRecursive(rowNumber + i, columnNumber + j, visitedCells)
-            }
-        }
-    }
-}
-
-/**
  * @param rowNumber {number}
  * @param columnNumber {number}
  * @returns {Promise<boolean>}
@@ -187,47 +151,55 @@ Then(/^the game should be won$/, async () => {
 })
 Then(/^there shouldn't be any cell in the board$/, async () => {
     const board = await page.locator('[data-test-id="board"]')
-    const numberOfCells = await board.locator('.cell').count()
 
-    expect(numberOfCells).toBe(0)
+    expect(await board.locator('.cell').count()).toBe(0)
 })
-Then(/^the value of the timer should be: (\d+)$/, async (timer) => {
-    const timerValue = await page.locator('[data-test-id="timer"]').innerText()
+Then(/^the value of the timer should be: (\d+)$/, async (expectedValue) => {
+    const timer = await page.locator('[data-test-id="timer"]')
 
-    expect(parseInt(timerValue)).toBe(timer)
+    expect(parseInt(await timer.innerText())).toBe(expectedValue)
 })
-Then(/^the value of the remaining flags counter should be: (\d+)$/, async (counter) => {
-    const flagCounterValue = await page.locator('[data-test-id="flagsCounter"]').innerText()
+Then(/^the value of the remaining flags counter should be: (\d+)$/, async (expectedValue) => {
+    const flagCounter = await page.locator('[data-test-id="flagsCounter"]')
 
-    expect(parseInt(flagCounterValue)).toBe(counter)
+    expect(parseInt(await flagCounter.innerText())).toBe(expectedValue)
 })
-Then(/^the cell at: \((\d+), (\d+)\) should have a: (.*)$/, async (rowNumber, columnNumber, value) => {
+Then(/^the cell at: \((\d+), (\d+)\) should have a: (.*)$/, async (rowNumber, columnNumber, expectedValue) => {
     const cell = await getCell(rowNumber, columnNumber)
     const cellValue = await cell.innerText()
-    if (value === 'void') {
+
+    if (expectedValue === 'void') {
         expect(cellValue).toBe('\xa0')
     } else {
-        expect(cellValue).toBe(value.toString())
+        expect(cellValue).toBe(expectedValue.toString())
     }
 })
-Then(/^the board should be$/, async (table) => {
+Then(/^the board should be:$/, async (table) => {
     const board = await page.locator('[data-test-id="board"]')
     const rows = await board.locator('.row')
     const numberOfCellsForRow = await rows.last().locator('.cell').count()
     const expectedBoard = table.split('\n')
 
     for (let row = 0; row < expectedBoard.length; row++) {
-        expectedBoard[row] = expectedBoard[row].replace(/[^a-zA-Z]+/g, '')
+        expectedBoard[row] = expectedBoard[row].replace(/[^a-zA-Z0-9]+/g, '')
     }
 
     for (let i = 0; i < await rows.count; i++) {
         for (let j = 0; j < numberOfCellsForRow; j++) {
             const cell = await rows.nth(i).locator('.cell').nth(j)
             const cellClass = await cell.getAttribute('class')
+
             if (expectedBoard[i][j] === 'M') {
                 expect(cellClass).toContain('cellMined')
-            } else {
-                expect(cellClass).not.toContain('cellMined')
+            } else if (expectedBoard[i][j] === 'F' || expectedBoard[i][j] === 'f') {
+                expect(cellClass).toContain('cellFlagged')
+            } else if (expectedBoard[i][j] === 'Q' || expectedBoard[i][j] === 'q') {
+                expect(cellClass).toContain('cellQuestioned')
+            } else if (expectedBoard[i][j] === 'H') {
+                expect(cellClass).not.toContain('cellExposed')
+            } else if (expectedBoard[i][j].match(/[0-8]/)) {
+                expect(cellClass).toContain('cellExposed')
+                expect(await cell.innerText()).toBe(expectedBoard[i][j])
             }
         }
     }
@@ -241,9 +213,6 @@ Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (rowNu
         const cellClass = await cell.getAttribute('class')
         expect(cellClass).toContain('cellExposed')
     }
-})
-Then(/^all the cells around: \((\d+), (\d+)\) should be revealed recursively$/, async (rowNumber, columnNumber) => {
-    await checkRevealRecursive(rowNumber, columnNumber, [[rowNumber, columnNumber]])
 })
 Then(/^the cell at: \((\d+), (\d+)\) should be flagged$/, async (rowNumber, columnNumber) => {
     expect(await cellIsFlagged(rowNumber, columnNumber)).toBe(true)
@@ -260,7 +229,7 @@ Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (rowNumber
 Then(/^the game should be restarted$/, async () => {
     return 'pending'
 })
-Then(/^there should be: (\d+) mines$/, async () => {
+Then(/^there should be: (\d+) mines$/, async (expectedValue) => {
     return 'pending'
 })
 Then(/^all the mines should be revealed$/, async () => {
@@ -269,6 +238,12 @@ Then(/^all the mines should be revealed$/, async () => {
 Then(/^All the mines should be blown up$/, async () => {
     return 'pending'
 })
-Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async () => {
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (rowNumber, columnNumber) => {
+    return 'pending'
+})
+Then(/^the board should have: (\d+) rows$/, async (expectedValue) => {
+    return 'pending'
+})
+Then(/^the board should have: (\d+) columns for each row$/, async (expectedValue) => {
     return 'pending'
 })
