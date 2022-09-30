@@ -247,7 +247,7 @@ Feature: Minesweeper
     When the user click the smiley
     Then no cells should be questioned
 
-  @Working
+  @Finished
   Scenario: the user click the smiley to restart the game: the timer should be reset
     Given a board generated with this mock data: MOMO
     When the user reveal the cell at: (1, 2)

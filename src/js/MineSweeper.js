@@ -35,6 +35,7 @@ class MineSweeper {
     init () {
         const s = this
 
+        clearInterval(s._timerInterval)
         s._createBoard()
         s._gameStatus = 'standby'
     }
