@@ -256,12 +256,16 @@ Feature: Minesweeper
     And the user wait 1 seconds
     Then the value of the timer should be: 0
 
-  #RANDOM
-  @TODO #TODO Create a scenario that check the length of the board and of the rows
-  Scenario: the game loads with random generation the board should have the correct length
-    Given a random board of: 8x8
-    Then the board should have: 8 rows
-    And the board should have: 8 columns for each row
+  @TODO #TODO the game loads with random generation, the board should have the correct length for eche sized board
+  Scenario Outline: the game loads with random generation, the board should have the correct length for eche sized board
+    Given a random board of: <size>
+    Then the board should have: <rows> rows
+    And the board should have: <columns> columns for each row
+    Examples:
+      | size  | rows | columns |
+      | 8x8   | 8    | 8       |
+      | 16x16 | 16   | 16      |
+      | 30x16 | 30   | 16      |
 
   @TODO #TODO The remaining flags counter should be the number of mines
   Scenario Outline: Default display screen with random scenarios: the remaining flags counter should be the number of mines
