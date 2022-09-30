@@ -236,7 +236,14 @@ Then(/^all the mines should be revealed$/, async () => {
     return 'pending'
 })
 Then(/^All the mines should be blown up$/, async () => {
-    return 'pending'
+    const mines = await page.locator('.cellMined')
+
+    for (let i = 0; i < await mines.count(); i++) {
+        const mine = mines.nth(i)
+        const mineClass = await mine.getAttribute('class')
+
+        expect(mineClass).toContain('cellExposed')
+    }
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (rowNumber, columnNumber) => {
     return 'pending'

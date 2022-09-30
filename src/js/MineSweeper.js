@@ -98,6 +98,11 @@ class MineSweeper {
 
         for (const cell of exposedCells) {
             if (cell.classList.contains('cellMined')) {
+                const mines = document.getElementsByClassName('cellMined')
+
+                for (const mine of mines) {
+                    mine.classList.add('cellExposed')
+                }
                 s._smiley.textContent = 'Sad'
                 return 'lost'
             }
@@ -153,7 +158,7 @@ class MineSweeper {
                 }
             }
             this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
-            if (numberOfMinedNeighbours === 0) {
+            if (numberOfMinedNeighbours === 0 && !this.classList.contains('cellMined')) {
                 for (const neighbour of neighbours) {
                     neighbour.click()
                 }

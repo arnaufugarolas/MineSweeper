@@ -8,9 +8,13 @@
 }
 
 .cellFlagged {
-    background-color: red;
+    background-color: blue;
 }
 
 .cellQuestioned {
     background-color: yellow;
+}
+
+.cellExposed.cellMined {
+    background-color: red;
 }
