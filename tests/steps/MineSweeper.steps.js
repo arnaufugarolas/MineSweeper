@@ -4,9 +4,9 @@ const { expect } = require('@playwright/test')
 const url = 'http://localhost:8080/MineSweeper/index.html'
 
 /**
- * @param rowNumber {number}- The row number of the cell you want to get.
- * @param columnNumber {number} - The column number of the cell you want to click.
- * @returns {Promise<Locator>} A promise that resolves to a cell
+ * @param rowNumber {number}
+ * @param columnNumber {number}
+ * @returns {Promise<Locator>}
  */
 async function getCell (rowNumber, columnNumber) {
     const board = await page.locator('[data-test-id="board"]')
@@ -20,9 +20,9 @@ async function getCell (rowNumber, columnNumber) {
 }
 
 /**
- * @param rowNumber {number} - The row number of the cell you want to get the neighbors of.
- * @param columnNumber {number} - The column number of the cell you want to get the neighbors of.
- * @returns {Promise<Locator[]>} An array of cells
+ * @param rowNumber {number}
+ * @param columnNumber {number}
+ * @returns {Promise<Locator[]>}
  */
 async function getCellsAround (rowNumber, columnNumber) {
     const cells = []
@@ -40,7 +40,6 @@ async function getCellsAround (rowNumber, columnNumber) {
 }
 
 /**
- * It checks if an array contains another array
  * @param superset {number[][]}
  * @param subset {number[]}
  * @returns {Promise<boolean>}
@@ -55,10 +54,9 @@ async function checkIfArrayContainsArray (superset, subset) {
 }
 
 /**
- * @param rowNumber {number} - The row number of the cell that was clicked.
- * @param columnNumber {number} - The column number of the cell that was clicked.
- * @param visitedCells {number[][]} - This is an array of cells that have already been visited. This is used to prevent infinite
- * recursion.
+ * @param rowNumber {number}
+ * @param columnNumber {number}
+ * @param visitedCells {number[][]}
  */
 async function checkRevealRecursive (rowNumber, columnNumber, visitedCells) {
     for (let i = -1; i <= 1; i++) {
@@ -78,9 +76,9 @@ async function checkRevealRecursive (rowNumber, columnNumber, visitedCells) {
 }
 
 /**
- * @param rowNumber {number} - The row number of the cell you want to check.
- * @param columnNumber {number} - The column number of the cell you want to check.
- * @returns {Promise<boolean>} A boolean value.
+ * @param rowNumber {number}
+ * @param columnNumber {number}
+ * @returns {Promise<boolean>}
  */
 async function cellIsFlagged (rowNumber, columnNumber) {
     const cell = await getCell(rowNumber, columnNumber)
@@ -89,9 +87,9 @@ async function cellIsFlagged (rowNumber, columnNumber) {
 }
 
 /**
- * @param rowNumber {number} - The row number of the cell you want to check.
- * @param columnNumber {number} - The column number of the cell you want to check.
- * @returns {Promise<boolean>} A boolean value.
+ * @param rowNumber {number}
+ * @param columnNumber {number}
+ * @returns {Promise<boolean>}
  */
 async function cellIsQuestioned (rowNumber, columnNumber) {
     const cell = await getCell(rowNumber, columnNumber)
@@ -263,5 +261,14 @@ Then(/^the game should be restarted$/, async () => {
     return 'pending'
 })
 Then(/^there should be: (\d+) mines$/, async () => {
+    return 'pending'
+})
+Then(/^all the mines should be revealed$/, async () => {
+    return 'pending'
+})
+Then(/^All the mines should be blown up$/, async () => {
+    return 'pending'
+})
+Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async () => {
     return 'pending'
 })

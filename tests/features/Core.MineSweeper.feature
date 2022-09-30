@@ -21,23 +21,13 @@ Feature: Minesweeper
     Given a user opens the app
 
   @Finished
-  Scenario: Default display screen without mock data and without a random map
+  Scenario: Default display screen: no mock data and no a random map
     Then the value of the remaining flags counter should be: 0
     And the value of the timer should be: 0
     And there shouldn't be any cell in the board
 
   @Finished
-  Scenario: the game loads with mock data
-    Given a board generated with this mock data: MOM^MOM^MOM
-    Then the board should be
-      """
-        | M  O  M |
-        | M  O  M |
-        | M  O  M |
-      """
-
-  @Finished
-  Scenario: Default display screen with mocked board: remaining flags counter and timer
+  Scenario: Default display screen: with mocked board: remaining flags counter and timer
     Given a board generated with this mock data: MMM^MOM^MOO
     Then the value of the remaining flags counter should be: 6
     And the value of the timer should be: 0
@@ -55,18 +45,40 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 1)
     Then the game should be lost
 
+  Scenario: the user reveal a cell that is a mine and lose the game: all the mines have blown up
+    Given a board generated with this mock data: MOMO^OMOM^MOMO
+    When the user reveal the cell at: (1, 1)
+    Then the game should be lost
+    And All the mines should be blown up
+
+  Scenario: the user reveal a cell that is a mine and lose the game: the user can't reveal any other cell
+    Given a board generated with this mock data: MOMO^OMOM^MOMO
+    When the user reveal the cell at: (1, 1)
+    And the user reveal the cell at: (1, 2)
+    Then the game should be lost
+    And the cell at: (1, 2) shouldn't be revealed
+
+  Scenario: the user reveal a cell that is a mine and lose the game: the user can't flag a cell
+    Given a board generated with this mock data: MOMO^OMOM^MOMO
+    When the user reveal the cell at: (1, 1)
+    And the user flag the cell at: (1, 2)
+    Then the game should be lost
+    And the cell at: (1, 2) shouldn't be flagged
+
+  Scenario: the user reveal a cell that is a mine and lose the game: the user can't question a cell
+    Given a board generated with this mock data: MOMO^OMOM^MOMO
+    When the user reveal the cell at: (1, 1)
+    And the user question the cell at: (1, 2)
+    Then the game should be lost
+    And the cell at: (1, 2) shouldn't be questioned
+
   @Finished
   Scenario: the user reveal all the noneMine cells and win the game
     Given a board generated with this mock data: MO
     When the user reveal the cell at: (1, 2)
     Then the game should be won
 
-  @Finished
-  Scenario: the user reveal a cell with 0 mines around it
-    Given a board generated with this mock data: OOOO^OOOO^OOOM
-    When the user reveal the cell at: (2, 2)
-    Then the cell at: (2, 2) should have a: void
-    And all the cells around: (2, 2) should be revealed
+
 
   @Finished
   Scenario Outline: the user reveal a cell with (1...8) mine around it
@@ -83,6 +95,18 @@ Feature: Minesweeper
       | MMM^MOM^MOO | 6           |
       | MMM^MOM^MMO | 7           |
       | MMM^MOM^MMM | 8           |
+
+
+  Scenario: the user reveal a cell with 0 mines around it and no mine, is an empty cell
+    Given a board generated with this mock data: OOOO^OOOO^OOOM
+    When the user reveal the cell at: (2, 2)
+    Then the cell at: (2, 2) should be empty
+
+  @Finished
+  Scenario: the user reveal an empty cell, the cells arount it should be revealed
+    Given a board generated with this mock data: OOOO^OOOO^OOOM
+    When the user reveal the cell at: (2, 2)
+    Then  all the cells around: (2, 2) should be revealed
 
   @Finished
   Scenario: a cell is revealed by a neighbor cell
@@ -161,6 +185,7 @@ Feature: Minesweeper
     When the user click the smiley
     Then the game should be restarted
 
+  #Necessary?
   Scenario: the game loads with random generation
     Given a random board of: 8x8
     Then the board should be
@@ -175,6 +200,7 @@ Feature: Minesweeper
         | H  H  H  H  H  H  H  H |
       """
 
+  #Redundant?
   Scenario Outline: Default display screen with random scenarios: remaining flags counter and timer
     Given a random board of: <size>
     Then the value of the remaining flags counter should be: <remainingFlags>
@@ -184,6 +210,16 @@ Feature: Minesweeper
       | 8x8   | 10             |
       | 16x16 | 40             |
       | 30x16 | 99             |
+
+  #Redundant?
+  Scenario Outline: the game loads with random generation: number of mines
+    Given a random board of: <size>
+    Then there should be: <mines> mines
+    Examples:
+      | size  | mines |
+      | 8x8   | 10    |
+      | 16x16 | 40    |
+      | 30x16 | 99    |
 
   Scenario Outline: Default display screen with random scenarios: cells states
     Given a random board of: <size>
@@ -195,12 +231,3 @@ Feature: Minesweeper
       | 8x8   |
       | 16x16 |
       | 30x16 |
-
-  Scenario Outline: the game loads with random generation: number of mines
-    Given a random board of: <size>
-    Then there should be: <mines> mines
-    Examples:
-      | size  | mines |
-      | 8x8   | 10    |
-      | 16x16 | 40    |
-      | 30x16 | 99    |
