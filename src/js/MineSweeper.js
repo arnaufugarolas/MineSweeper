@@ -159,7 +159,7 @@ class MineSweeper {
      * @this {HTMLButtonElement}
      */
     _cellLeftClickHandler (s) {
-        if (!this.classList.contains('cellExposed')) {
+        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             const neighbours = s._getCellNeighbours(this)
             let numberOfMinedNeighbours = 0
 
