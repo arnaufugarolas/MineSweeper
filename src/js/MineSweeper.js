@@ -28,14 +28,15 @@ class MineSweeper {
         s._flagsCounter = document.getElementById('flagsCounter')
         s._timer = document.getElementById('timer')
         s._smiley = document.getElementById('smiley')
-        s._gameStatus = 'playing'
+        s._timerInterval = 0
+        s._smileyEventHandler(s._smiley)
     }
 
     init () {
         const s = this
 
         s._createBoard()
-        s._gameStatus = 'playing'
+        s._gameStatus = 'standby'
     }
 
     _createBoard () {
@@ -56,7 +57,7 @@ class MineSweeper {
     }
 
     /**
-     * @param data {String} - a string of characters that represent the board.
+     * @param data {String}
      */
     _createBoardFromMockData (data) {
         const s = this
@@ -88,7 +89,7 @@ class MineSweeper {
     }
 
     /**
-     * @returns {String} The status of the game.
+     * @returns {String}
      */
     _checkGameStatus () {
         const s = this
@@ -98,13 +99,22 @@ class MineSweeper {
 
         for (const cell of exposedCells) {
             if (cell.classList.contains('cellMined')) {
+                const mines = document.getElementsByClassName('cellMined')
+
+                for (const mine of mines) {
+                    mine.classList.add('cellExposed')
+                }
                 s._smiley.textContent = 'Sad'
+
+                clearInterval(s._timerInterval)
+
                 return 'lost'
             }
         }
 
         if (exposedCells.length === numberOfCells - numberOfMines) {
             s._smiley.textContent = 'Happy'
+            clearInterval(s._timerInterval)
             return 'win'
         }
 
@@ -112,8 +122,8 @@ class MineSweeper {
     }
 
     /**
-     * @param cell {HTMLButtonElement} - The cell that we want to get the neighbours of.
-     * @returns {HTMLButtonElement[]} An array of the neighbours of the cell.
+     * @param cell {HTMLButtonElement}
+     * @returns {HTMLButtonElement[]}
      */
     _getCellNeighbours (cell) {
         const s = this
@@ -125,7 +135,9 @@ class MineSweeper {
 
         for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) { continue }
+                if (i === 0 && j === 0) {
+                    continue
+                }
                 const row = cellRowNumber + i
                 const column = cellColumnNumber + j
 
@@ -136,6 +148,15 @@ class MineSweeper {
         }
 
         return neighbours
+    }
+
+    _cellFirstsClickHandler (s) {
+        if (s._gameStatus === 'standby') {
+            s._gameStatus = 'playing'
+            s._timerInterval = setInterval(function () {
+                s._timer.textContent = (parseInt(s._timer.textContent) + 1).toString()
+            }, 1000)
+        }
     }
 
     /**
@@ -153,7 +174,7 @@ class MineSweeper {
                 }
             }
             this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
-            if (numberOfMinedNeighbours === 0) {
+            if (numberOfMinedNeighbours === 0 && !this.classList.contains('cellMined')) {
                 for (const neighbour of neighbours) {
                     neighbour.click()
                 }
@@ -171,7 +192,7 @@ class MineSweeper {
     }
 
     /**
-     * @param s {MineSweeper} - the game object
+     * @param s {MineSweeper}
      * @this {HTMLButtonElement}
      */
     _cellRightClickHandler (s) {
@@ -190,16 +211,36 @@ class MineSweeper {
     }
 
     /**
-     * @param cell {HTMLButtonElement} - the cell that the event handler is being added to
+     * @param cell {HTMLButtonElement}
      */
     _cellEventHandler (cell) {
         const s = this
 
+        cell.addEventListener('click', s._cellFirstsClickHandler.bind(cell, s))
         cell.addEventListener('click', s._cellLeftClickHandler.bind(cell, s))
 
         cell.addEventListener('contextmenu', async function (e) {
             e.preventDefault()
-            await s._cellRightClickHandler.bind(cell, s)(e)
         })
+        cell.addEventListener('contextmenu', s._cellFirstsClickHandler.bind(cell, s))
+        cell.addEventListener('contextmenu', s._cellRightClickHandler.bind(cell, s))
+    }
+
+    /**
+     * @param s {MineSweeper}
+     * @this {HTMLButtonElement}
+     */
+    _smileyClickHandler (s) {
+        s._board.innerHTML = ''
+        s.init()
+    }
+
+    /**
+     * @param smiley {HTMLButtonElement}
+     */
+    _smileyEventHandler (smiley) {
+        const s = this
+
+        smiley.addEventListener('click', s._smileyClickHandler.bind(smiley, s))
     }
 }

@@ -105,6 +105,7 @@ When(/^the user remove the flag from the cell at: \((\d+), (\d+)\)$/, async (row
 })
 When(/^the user question the cell at: \((\d+), (\d+)\)$/, async (rowNumber, columnNumber) => {
     const cell = await getCell(rowNumber, columnNumber)
+
     if ((await cell.getAttribute('class')).includes('cellFlagged')) {
         await cell.click({ button: 'right' })
     } else {
@@ -119,8 +120,14 @@ When(/^the user remove the question from the cell at: \((\d+), (\d+)\)$/, async 
     }
 })
 When(/^the user click the smiley$/, async () => {
-    return 'pending'
+    const smiley = await page.locator('[data-test-id="smiley"]')
+
+    await smiley.click()
 })
+When(/^the user wait (\d+) seconds$/, async (seconds) => {
+    await page.waitForTimeout(seconds * 1000)
+})
+
 /**
  * Then
  */
@@ -226,20 +233,26 @@ Then(/^the cell at: \((\d+), (\d+)\) should be questioned$/, async (rowNumber, c
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be questioned$/, async (rowNumber, columnNumber) => {
     expect(await cellIsQuestioned(rowNumber, columnNumber)).toBe(false)
 })
-Then(/^the game should be restarted$/, async () => {
-    return 'pending'
-})
-Then(/^there should be: (\d+) mines$/, async (expectedValue) => {
-    return 'pending'
-})
-Then(/^all the mines should be revealed$/, async () => {
-    return 'pending'
-})
 Then(/^All the mines should be blown up$/, async () => {
-    return 'pending'
+    const mines = await page.locator('.cellMined')
+
+    for (let i = 0; i < await mines.count(); i++) {
+        const mine = mines.nth(i)
+        const mineClass = await mine.getAttribute('class')
+
+        expect(mineClass).toContain('cellExposed')
+    }
+})
+Then(/^the game should be restarted$/, async () => {
+    const smiley = await page.locator('[data-test-id="smiley"]')
+
+    expect(await smiley.textContent()).toBe('Bored')
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (rowNumber, columnNumber) => {
-    return 'pending'
+    const cell = await getCell(rowNumber, columnNumber)
+    const cellClass = await cell.getAttribute('class')
+
+    expect(cellClass).not.toContain('cellExposed')
 })
 Then(/^the board should have: (\d+) rows$/, async (expectedValue) => {
     return 'pending'

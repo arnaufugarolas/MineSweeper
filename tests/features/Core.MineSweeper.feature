@@ -19,8 +19,6 @@ Feature: Minesweeper
   16x16 -> 40 mines
   30x16 -> 99 mines
 
-  Background:
-
   @Finished
   Scenario: Default display screen: no mock data and no a random map the board shouldn't have cells
     Given a user opens the app
@@ -59,7 +57,7 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 1)
     Then the game should be lost
 
-  @TODO #TODO all the mines should blown up when the user clicks a mine (Blown up == exposed)
+  @Finished
   Scenario: the user reveal a cell that is a mine and lose the game: all the mines should blown up
     Given a board generated with this mock data: MOMO^OMOM^MOMO
     When the user reveal the cell at: (1, 1)
@@ -87,10 +85,35 @@ Feature: Minesweeper
     Then the cell at: (1, 2) shouldn't be questioned
 
   @Finished
+  Scenario: the user do the firsts click action (reveal, flag or question a cell), the timer should start counting
+    Given a board generated with this mock data: OMO
+    When the user reveal the cell at: (1, 1)
+    And the user wait 2 seconds
+    Then the value of the timer should be: 2
+
+  @Finished
+  Scenario: the user reveal a cell that is a mine and lose the game: the timer should stop counting
+    Given a board generated with this mock data: MOMO
+    When the user reveal the cell at: (1, 2)
+    And the user wait 1 seconds
+    And the user reveal the cell at: (1, 1)
+    And the user wait 1 seconds
+    Then the value of the timer should be: 1
+
+  @Finished
   Scenario: the user reveal all the noneMine cells and win the game
     Given a board generated with this mock data: MO
     When the user reveal the cell at: (1, 2)
     Then the game should be won
+
+  @Working
+  Scenario: the user reveal all the noneMine cells and win the game: the timer should stop counting
+    Given a board generated with this mock data: MOMO
+    When the user reveal the cell at: (1, 2)
+    And the user wait 1 seconds
+    And the user reveal the cell at: (1, 4)
+    And the user wait 1 seconds
+    Then the value of the timer should be: 1
 
   @Finished
   Scenario Outline: the user reveal a cell with (1..8) mine around it
@@ -198,11 +221,37 @@ Feature: Minesweeper
     When the user remove the question from the cell at: (1, 2)
     Then the value of the remaining flags counter should be: 2
 
-  @TODO #TODO When the user clicks the smiley the game should be restarted
+  @Finished
   Scenario: the user click the smiley to restart the game
     Given a user opens the app
     When the user click the smiley
     Then the game should be restarted
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be revealed
+  Scenario: the user click the smiley to restart the game: all the cells should be hidden
+    Given a board generated with this mock data: MOMO
+    When the user click the smiley
+    Then no cells should be exposed
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be flagged
+  Scenario: the user click the smiley to restart the game: no cells should be flagged
+    Given a board generated with this mock data: MOMO
+    When the user click the smiley
+    Then no cells should be flagged
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be questioned
+  Scenario: the user click the smiley to restart the game: no cells should be questioned
+    Given a board generated with this mock data: MOMO
+    When the user click the smiley
+    Then no cells should be questioned
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and the timer should be reset
+  Scenario: the user click the smiley to restart the game: the timer should be reset
+    Given a board generated with this mock data: MOMO
+    When the user reveal the cell at: (1, 2)
+    And the user wait 5 seconds
+    And the user click the smiley
+    Then the value of the timer should be: 0
 
   @TODO #TODO Create a scenario that check the length of the board and of the rows
   Scenario: the game loads with random generation the board should have the correct length
@@ -221,7 +270,7 @@ Feature: Minesweeper
       | 30x16 | 99             |
 
   @TODO #TODO The timer should be 0
-  Scenario: Default display screen with random scenarios: timer
+  Scenario: Default display screen with random scenarios: timer should be 0
     Given a random board of: <size>
     Then the value of the timer should be: 0
 
