@@ -114,6 +114,7 @@ class MineSweeper {
 
         if (exposedCells.length === numberOfCells - numberOfMines) {
             s._smiley.textContent = 'Happy'
+            clearInterval(s._timerInterval)
             return 'win'
         }
 
