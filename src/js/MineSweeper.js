@@ -28,8 +28,7 @@ class MineSweeper {
         s._flagsCounter = document.getElementById('flagsCounter')
         s._timer = document.getElementById('timer')
         s._smiley = document.getElementById('smiley')
-        s._gameStatus = 'playing'
-
+        s._timerInterval = setInterval(null)
         s._smileyEventHandler(s._smiley)
     }
 
@@ -37,7 +36,8 @@ class MineSweeper {
         const s = this
 
         s._createBoard()
-        s._gameStatus = 'playing'
+        s._gameStatus = 'standby'
+        clearInterval(s._timerInterval)
     }
 
     _createBoard () {
@@ -145,12 +145,21 @@ class MineSweeper {
         return neighbours
     }
 
+    _cellFirtsClickHandler (s) {
+        if (s._gameStatus === 'standby') {
+            s._gameStatus = 'playing'
+            s._timerInterval = setInterval(function () {
+                s._timer.textContent = (parseInt(s._timer.textContent) + 1).toString()
+            }, 1000)
+        }
+    }
+
     /**
      * @param s {MineSweeper}
      * @this {HTMLButtonElement}
      */
     _cellLeftClickHandler (s) {
-        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
+        if (!this.classList.contains('cellExposed')) {
             const neighbours = s._getCellNeighbours(this)
             let numberOfMinedNeighbours = 0
 
@@ -202,12 +211,12 @@ class MineSweeper {
     _cellEventHandler (cell) {
         const s = this
 
+        cell.addEventListener('click', s._cellFirtsClickHandler.bind(cell, s))
         cell.addEventListener('click', s._cellLeftClickHandler.bind(cell, s))
 
-        cell.addEventListener('contextmenu', async function (e) {
-            e.preventDefault()
-            await s._cellRightClickHandler.bind(cell, s)(e)
-        })
+        cell.addEventListener('contextmenu', async function (e) { e.preventDefault() })
+        cell.addEventListener('contextmenu', s._cellFirtsClickHandler.bind(cell, s))
+        cell.addEventListener('contextmenu', s._cellRightClickHandler.bind(cell, s))
     }
 
     /**
