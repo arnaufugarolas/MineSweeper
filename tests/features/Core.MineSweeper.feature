@@ -130,7 +130,7 @@ Feature: Minesweeper
       | 0  0  0  1  H |
     """
 
-  @TODO #TODO When the user start the game the timer should start counting
+  @Finished
   Scenario: the user reveal a unmined cell and its the first one, the timer should start counting
     Given a board generated with this mock data: OMO
     When the user reveal the cell at: (1, 1)
