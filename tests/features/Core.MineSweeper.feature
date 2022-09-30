@@ -59,7 +59,7 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 1)
     Then the game should be lost
 
-  @TODO #TODO all the mines should blown up when the user clicks a mine (Blown up == exposed)
+  @Finished
   Scenario: the user reveal a cell that is a mine and lose the game: all the mines should blown up
     Given a board generated with this mock data: MOMO^OMOM^MOMO
     When the user reveal the cell at: (1, 1)
