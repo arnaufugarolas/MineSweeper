@@ -106,6 +106,15 @@ Feature: Minesweeper
     When the user reveal the cell at: (1, 2)
     Then the game should be won
 
+  @TODO #TODO the user reveal all the noneMine cells and win the game: the timer should stop counting
+  Scenario: the user reveal all the noneMine cells and win the game: the timer should stop counting
+    Given a board generated with this mock data: MOMO
+    When the user reveal the cell at: (1, 2)
+    And the user wait 1 seconds
+    And the user reveal the cell at: (1, 4)
+    And the user wait 1 seconds
+    Then the value of the timer should be: 1
+
   @Finished
   Scenario Outline: the user reveal a cell with (1..8) mine around it
     Given a board generated with this mock data: <board>
