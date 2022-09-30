@@ -204,6 +204,12 @@ Feature: Minesweeper
     When the user click the smiley
     Then the game should be restarted
 
+  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be revealed
+  Scenario: the user click the smiley to restart the game: all the cells should be hidden
+  Given a board generated with this mock data: MOMO
+  When the user click the smiley
+  Then no cells should be exposed
+
   @TODO #TODO Create a scenario that check the length of the board and of the rows
   Scenario: the game loads with random generation the board should have the correct length
     Given a random board of: 8x8
