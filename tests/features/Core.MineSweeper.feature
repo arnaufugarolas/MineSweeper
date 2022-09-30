@@ -19,8 +19,6 @@ Feature: Minesweeper
   16x16 -> 40 mines
   30x16 -> 99 mines
 
-  Background:
-
   @Finished
   Scenario: Default display screen: no mock data and no a random map the board shouldn't have cells
     Given a user opens the app
@@ -198,7 +196,7 @@ Feature: Minesweeper
     When the user remove the question from the cell at: (1, 2)
     Then the value of the remaining flags counter should be: 2
 
-  @TODO #TODO When the user clicks the smiley the game should be restarted
+  @Finished
   Scenario: the user click the smiley to restart the game
     Given a user opens the app
     When the user click the smiley

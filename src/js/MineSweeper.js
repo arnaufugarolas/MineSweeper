@@ -29,6 +29,8 @@ class MineSweeper {
         s._timer = document.getElementById('timer')
         s._smiley = document.getElementById('smiley')
         s._gameStatus = 'playing'
+
+        s._smileyEventHandler(s._smiley)
     }
 
     init () {
@@ -56,7 +58,7 @@ class MineSweeper {
     }
 
     /**
-     * @param data {String} - a string of characters that represent the board.
+     * @param data {String}
      */
     _createBoardFromMockData (data) {
         const s = this
@@ -88,7 +90,7 @@ class MineSweeper {
     }
 
     /**
-     * @returns {String} The status of the game.
+     * @returns {String}
      */
     _checkGameStatus () {
         const s = this
@@ -117,8 +119,8 @@ class MineSweeper {
     }
 
     /**
-     * @param cell {HTMLButtonElement} - The cell that we want to get the neighbours of.
-     * @returns {HTMLButtonElement[]} An array of the neighbours of the cell.
+     * @param cell {HTMLButtonElement}
+     * @returns {HTMLButtonElement[]}
      */
     _getCellNeighbours (cell) {
         const s = this
@@ -176,7 +178,7 @@ class MineSweeper {
     }
 
     /**
-     * @param s {MineSweeper} - the game object
+     * @param s {MineSweeper}
      * @this {HTMLButtonElement}
      */
     _cellRightClickHandler (s) {
@@ -195,7 +197,7 @@ class MineSweeper {
     }
 
     /**
-     * @param cell {HTMLButtonElement} - the cell that the event handler is being added to
+     * @param cell {HTMLButtonElement}
      */
     _cellEventHandler (cell) {
         const s = this
@@ -206,5 +208,23 @@ class MineSweeper {
             e.preventDefault()
             await s._cellRightClickHandler.bind(cell, s)(e)
         })
+    }
+
+    /**
+     * @param s {MineSweeper}
+     * @this {HTMLButtonElement}
+     */
+    _smileyClickHandler (s) {
+        s._board.innerHTML = ''
+        s.init()
+    }
+
+    /**
+     * @param smiley {HTMLButtonElement}
+     */
+    _smileyEventHandler (smiley) {
+        const s = this
+
+        smiley.addEventListener('click', s._smileyClickHandler.bind(smiley, s))
     }
 }
