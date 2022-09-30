@@ -253,6 +253,8 @@ Feature: Minesweeper
     And the user click the smiley
     Then the value of the timer should be: 0
 
+
+  #RANDOM
   @TODO #TODO Create a scenario that check the length of the board and of the rows
   Scenario: the game loads with random generation the board should have the correct length
     Given a random board of: 8x8
