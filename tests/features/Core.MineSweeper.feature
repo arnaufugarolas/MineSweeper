@@ -227,10 +227,11 @@ Feature: Minesweeper
     When the user click the smiley
     Then the game should be restarted
 
-  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be revealed
+  @Finished
   Scenario: the user click the smiley to restart the game: all the cells should be hidden
     Given a board generated with this mock data: MOMO
-    When the user click the smiley
+    When the user reveal the cell at: (1, 2)
+    And the user click the smiley
     Then no cells should be exposed
 
   @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be flagged
