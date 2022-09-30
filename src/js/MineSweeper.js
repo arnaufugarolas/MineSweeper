@@ -134,7 +134,9 @@ class MineSweeper {
 
         for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) { continue }
+                if (i === 0 && j === 0) {
+                    continue
+                }
                 const row = cellRowNumber + i
                 const column = cellColumnNumber + j
 
@@ -216,7 +218,9 @@ class MineSweeper {
         cell.addEventListener('click', s._cellFirstsClickHandler.bind(cell, s))
         cell.addEventListener('click', s._cellLeftClickHandler.bind(cell, s))
 
-        cell.addEventListener('contextmenu', async function (e) { e.preventDefault() })
+        cell.addEventListener('contextmenu', async function (e) {
+            e.preventDefault()
+        })
         cell.addEventListener('contextmenu', s._cellFirstsClickHandler.bind(cell, s))
         cell.addEventListener('contextmenu', s._cellRightClickHandler.bind(cell, s))
     }
