@@ -84,7 +84,7 @@ Feature: Minesweeper
     And the user question the cell at: (1, 2)
     Then the cell at: (1, 2) shouldn't be questioned
 
-  @Working
+  @Finished
   Scenario: the user reveal a cell that is a mine and lose the game: the timer should stop counting
     Given a board generated with this mock data: MOMO
     When the user reveal the cell at: (1, 2)

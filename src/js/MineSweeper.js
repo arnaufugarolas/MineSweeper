@@ -28,6 +28,7 @@ class MineSweeper {
         s._flagsCounter = document.getElementById('flagsCounter')
         s._timer = document.getElementById('timer')
         s._smiley = document.getElementById('smiley')
+        s._timerInterval = 0
         s._smileyEventHandler(s._smiley)
     }
 
@@ -104,6 +105,9 @@ class MineSweeper {
                     mine.classList.add('cellExposed')
                 }
                 s._smiley.textContent = 'Sad'
+
+                clearInterval(s._timerInterval)
+
                 return 'lost'
             }
         }
