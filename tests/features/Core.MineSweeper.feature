@@ -130,6 +130,13 @@ Feature: Minesweeper
       | 0  0  0  1  H |
     """
 
+  @TODO #TODO When the user start the game the timer should start counting
+  Scenario: the user reveal a unmined cell and its the first one, the timer should start counting
+    Given a board generated with this mock data: OMO
+    When the user reveal the cell at: (1, 1)
+    And the user wait 2 seconds
+    Then the value of the timer should be: 2
+
   @Finished
   Scenario: the user flag a cell
     Given a board generated with this mock data: MO
@@ -204,9 +211,29 @@ Feature: Minesweeper
 
   @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be revealed
   Scenario: the user click the smiley to restart the game: all the cells should be hidden
-  Given a board generated with this mock data: MOMO
-  When the user click the smiley
-  Then no cells should be exposed
+    Given a board generated with this mock data: MOMO
+    When the user click the smiley
+    Then no cells should be exposed
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be flagged
+  Scenario: the user click the smiley to restart the game: no cells should be flagged
+    Given a board generated with this mock data: MOMO
+    When the user click the smiley
+    Then no cells should be flagged
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and no cells should be questioned
+  Scenario: the user click the smiley to restart the game: no cells should be questioned
+    Given a board generated with this mock data: MOMO
+    When the user click the smiley
+    Then no cells should be questioned
+
+  @TODO #TODO When the user clicks the smiley the game should be restarted and the timer should be reset
+  Scenario: the user click the smiley to restart the game: the timer should be reset
+    Given a board generated with this mock data: MOMO
+    When the user reveal the cell at: (1, 2)
+    And the user wait 5 seconds
+    And the user click the smiley
+    Then the value of the timer should be: 0
 
   @TODO #TODO Create a scenario that check the length of the board and of the rows
   Scenario: the game loads with random generation the board should have the correct length
