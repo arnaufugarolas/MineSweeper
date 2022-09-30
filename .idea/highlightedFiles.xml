@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectTreeColorHighlighter">
-    <files />
+    <files>
+      <node color="3" path="$PROJECT_DIR$/cucumber.conf.js" />
+      <node color="5" path="$PROJECT_DIR$/src/css" />
+      <node color="1" path="$PROJECT_DIR$/src/index.html" />
+      <node color="3" path="$PROJECT_DIR$/src/js" />
+      <node color="4" path="$PROJECT_DIR$/tests/features" />
+      <node color="3" path="$PROJECT_DIR$/tests/steps" />
+      <node color="3" path="$PROJECT_DIR$/tests/steps/MineSweeper.steps.js" />
+    </files>
     <colors>
       <color id="1" value="#4f060d" name="Color 1" enabled="true" />
       <color id="2" value="#44220e" name="Color 2" enabled="true" />
