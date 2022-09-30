@@ -125,7 +125,7 @@ When(/^the user click the smiley$/, async () => {
     await smiley.click()
 })
 When(/^the user wait (\d+) seconds$/, async (seconds) => {
-    return 'pending'
+    await page.waitForTimeout(seconds * 1000)
 })
 
 /**
