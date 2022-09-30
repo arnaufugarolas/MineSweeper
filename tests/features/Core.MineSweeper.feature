@@ -131,7 +131,7 @@ Feature: Minesweeper
     """
 
   @Finished
-  Scenario: the user reveal a unmined cell and its the first one, the timer should start counting
+  Scenario: the user do the firsts click action (reveal, flag or question a cell), the timer should start counting
     Given a board generated with this mock data: OMO
     When the user reveal the cell at: (1, 1)
     And the user wait 2 seconds
@@ -252,7 +252,7 @@ Feature: Minesweeper
       | 30x16 | 99             |
 
   @TODO #TODO The timer should be 0
-  Scenario: Default display screen with random scenarios: timer
+  Scenario: Default display screen with random scenarios: timer should be 0
     Given a random board of: <size>
     Then the value of the timer should be: 0
 
