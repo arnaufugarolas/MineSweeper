@@ -80,8 +80,8 @@ Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (rowNumber, columnN
 
     await cell.dblclick({ button: 'right' })
 })
-Given(/^a random board of: (.*)$/, async (size) => {
-    return 'pending'
+Given(/^a random board of: (.*) with (\d+) mines$/, async (size, mines) => {
+    await page.goto(`${url}?size=${size}&mines=${mines}`, { waitUntil: 'load' })
 })
 /**
  * When
