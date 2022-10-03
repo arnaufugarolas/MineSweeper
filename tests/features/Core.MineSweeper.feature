@@ -256,7 +256,7 @@ Feature: Minesweeper
     And the user wait 1 seconds
     Then the value of the timer should be: 0
 
-  @TODO #TODO the game loads with random generation, the board should have the correct length for eche sized board
+  @Working
   Scenario Outline: the game loads with random generation, the board should have the correct length for eche sized board
     Given a random board of: <rows>x<columns> with <mines> mines
     Then the board should have: <rows> rows
