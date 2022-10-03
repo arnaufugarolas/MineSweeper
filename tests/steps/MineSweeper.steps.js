@@ -255,8 +255,17 @@ Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (rowNumber, 
     expect(cellClass).not.toContain('cellExposed')
 })
 Then(/^the board should have: (\d+) rows$/, async (expectedValue) => {
-    return 'pending'
+    const board = await page.locator('[data-test-id="board"]')
+    const rows = await board.locator('.row')
+
+    expect(await rows.count()).toBe(expectedValue)
 })
 Then(/^the board should have: (\d+) columns for each row$/, async (expectedValue) => {
-    return 'pending'
+    const board = await page.locator('[data-test-id="board"]')
+    const rows = await board.locator('.row')
+
+    for (let i = 0; i < await rows.count(); i++) {
+        const cells = await rows.nth(i).locator('.cell')
+        expect(await cells.count()).toBe(expectedValue)
+    }
 })
