@@ -282,7 +282,7 @@ Feature: Minesweeper
     Given a random board of: 8x8 with 10 mines
     Then the value of the timer should be: 0
 
-  @TODO #TODO All the cells should be hidden and not flagged or questioned
+  @Finished
   Scenario Outline: Default display screen with random scenarios: cells states
     Given a random board of: <size> with <mines> mines
     Then no cells should be exposed
