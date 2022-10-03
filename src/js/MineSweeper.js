@@ -85,6 +85,26 @@ class MineSweeper {
             }
             s._board.appendChild(tr)
         }
+        s._createBoardRandomAddMines(options)
+    }
+
+    _createBoardRandomAddMines (options) {
+        const s = this
+        const rowsNumber = parseInt(options.get('size').split('x')[0])
+        const columnsNumber = parseInt(options.get('size').split('x')[1])
+        let mines = options.get('mines')
+        s._flagsCounter.textContent = mines
+
+        while (mines > 0) {
+            const row = Math.floor(Math.random() * rowsNumber)
+            const column = Math.floor(Math.random() * columnsNumber)
+            const cell = s._board.rows[row].cells[column].firstChild
+
+            if (!cell.classList.contains('cellMined')) {
+                cell.classList.add('cellMined')
+                mines--
+            }
+        }
     }
 
     /**
