@@ -1,7 +1,6 @@
 window.addEventListener('load', function () {
     const params = new URLSearchParams(location.search)
-    const gameOptions = new Map([['boardType', 'default'], ['data', 'null']])
-
+    const gameOptions = new Map([['boardType', 'default'], ['data', '']])
     if (params.has('mock')) {
         const data = params.get('mock')
         gameOptions.set('boardType', 'mock')
@@ -23,21 +22,21 @@ class MineSweeper {
     constructor (gameOptions) {
         const s = this
 
-        s._gameOptions = gameOptions
         s._board = document.getElementById('board')
         s._flagsCounter = document.getElementById('flagsCounter')
         s._timer = document.getElementById('timer')
         s._smiley = document.getElementById('smiley')
-        s._timerInterval = 0
         s._smileyEventHandler(s._smiley)
+        s._gameOptions = gameOptions
+        s._timerInterval = 0
     }
 
     init () {
         const s = this
 
+        s._gameStatus = 'standby'
         clearInterval(s._timerInterval)
         s._createBoard()
-        s._gameStatus = 'standby'
     }
 
     _createBoard () {
@@ -47,20 +46,68 @@ class MineSweeper {
 
         switch (boardType) {
             case 'mock':
-                s._createBoardFromMockData(data)
+                s._createBoardMockData(data)
+                break
+            case 'random':
+                s._createBoardRandom(s._dataToOptionsMap(data))
                 break
             case 'default':
                 s._flagsCounter.textContent = '0'
                 break
         }
+
         s._timer.textContent = '0'
         s._smiley.textContent = 'Bored'
     }
 
     /**
-     * @param data {String}
+     * @param options {Map}
      */
-    _createBoardFromMockData (data) {
+    _createBoardRandom (options) {
+        const s = this
+        const rowsNumber = parseInt(options.get('size').split('x')[0])
+        const columnsNumber = parseInt(options.get('size').split('x')[1])
+
+        for (let i = 0; i < rowsNumber; i++) {
+            const tr = document.createElement('tr')
+            tr.setAttribute('class', 'row')
+
+            for (let j = 0; j < columnsNumber; j++) {
+                const td = document.createElement('td')
+                const cell = document.createElement('button')
+
+                cell.textContent = '\xa0'
+                cell.classList.add('cell')
+                s._cellEventHandler(cell)
+
+                td.appendChild(cell)
+                tr.appendChild(td)
+            }
+            s._board.appendChild(tr)
+        }
+    }
+
+    /**
+     * @param options {string}
+     * @returns {Map}
+     */
+    _dataToOptionsMap (options) {
+        const optionsMap = new Map()
+        const optionsArray = options.replace(/[{}]/g, '').split(',')
+
+        for (const option of optionsArray) {
+            const optionArray = option.split('=')
+
+            optionsMap.set(optionArray[0], optionArray[1])
+        }
+
+        return optionsMap
+    }
+
+    /**
+     * @param data {string}
+     */
+    _createBoardMockData (data) {
         const s = this
         const rows = data.split('^')
         let numberOfMines = 0
@@ -90,7 +137,7 @@ class MineSweeper {
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      */
     _checkGameStatus () {
         const s = this
@@ -124,9 +171,9 @@ class MineSweeper {
 
     /**
      * @param cell {HTMLButtonElement}
-     * @returns {HTMLButtonElement[]}
+     * @returns {Promise<HTMLButtonElement[]>}
      */
-    _getCellNeighbours (cell) {
+    async _getCellNeighbours (cell) {
         const s = this
         const cellRow = cell.parentNode.parentNode
         const cellColumn = cell.parentNode
@@ -151,6 +198,10 @@ class MineSweeper {
         return neighbours
     }
 
+    /**
+     * @param s {MineSweeper}
+     * @this {HTMLButtonElement}
+     */
     _cellFirstsClickHandler (s) {
         if (s._gameStatus === 'standby') {
             s._gameStatus = 'playing'
@@ -164,9 +215,17 @@ class MineSweeper {
      * @param s {MineSweeper}
      * @this {HTMLButtonElement}
      */
-    _cellLeftClickHandler (s) {
+    async _cellLeftClickHandler (s) {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-            const neighbours = s._getCellNeighbours(this)
+            this.classList.add('cellExposed')
+            if (this.classList.contains('cellFlagged')) {
+                this.classList.remove('cellFlagged')
+                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
+            } else if (this.classList.contains('cellQuestioned')) {
+                this.classList.remove('cellQuestioned')
+            }
+
+            const neighbours = await s._getCellNeighbours(this)
             let numberOfMinedNeighbours = 0
 
             for (const neighbour of neighbours) {
@@ -175,18 +234,13 @@ class MineSweeper {
                 }
             }
             this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
+
             if (numberOfMinedNeighbours === 0 && !this.classList.contains('cellMined')) {
                 for (const neighbour of neighbours) {
-                    neighbour.click()
+                    if (!neighbour.classList.contains('cellExposed')) {
+                        await neighbour.click()
+                    }
                 }
-            }
-
-            this.classList.add('cellExposed')
-            if (this.classList.contains('cellFlagged')) {
-                this.classList.remove('cellFlagged')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
-            } else if (this.classList.contains('cellQuestioned')) {
-                this.classList.remove('cellQuestioned')
             }
             s._gameStatus = s._checkGameStatus()
         }
