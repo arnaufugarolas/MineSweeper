@@ -267,17 +267,17 @@ Feature: Minesweeper
       | 16   | 16      | 40    |
       | 30   | 16      | 99    |
 
-  @TODO #TODO The remaining flags counter should be the number of mines
+  @Finished
   Scenario Outline: Default display screen with random scenarios: the remaining flags counter should be the number of mines
     Given a random board of: <size> with <remainingFlags> mines
     Then the value of the remaining flags counter should be: <remainingFlags>
     Examples:
       | size  | remainingFlags |
-      | 8x8   | 10             |
-      | 16x16 | 40             |
-      | 30x16 | 99             |
+      | 8x8   | 0              |
+      | 16x16 | 0              |
+      | 30x16 | 0              |
 
-  @TODO #TODO The timer should be 0
+  @Finished
   Scenario: Default display screen with random scenarios: timer should be 0
     Given a random board of: 8x8 with 10 mines
     Then the value of the timer should be: 0
