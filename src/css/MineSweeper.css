@@ -1,20 +1,70 @@
+:root {
+    --rich-black-fogra-29: #0d1321ff;
+    --pacific-blue: #23b5d3ff;
+    --pewter-blue: #75abbcff;
+    --cadet-blue-crayola: #a2aebbff;
+    --gainsboro: #dfe0e2ff;
+    --red-salsa: #f03a47ff;
+}
+
+#mineSweeper {
+    background-color: var(--rich-black-fogra-29);
+    margin: auto;
+}
+
 .cell {
-    background-color: #000000;
-    color: red;
+    background-color: var(--pacific-blue);
+    color: var(--rich-black-fogra-29);
+    border: 0.2em solid var(--gainsboro);
+    width: 3em;
+    height: 3em;
+    font-size: 1em;
+
+    background-repeat: no-repeat;
+    background-size: 3em 3em;
+    background-position: center;
+}
+
+#status {
+    color: var(--cadet-blue-crayola);
+}
+
+#timer {
+    float: right;
+    text-align: right;
+}
+
+#flagsCounter {
+    float: left;
+}
+
+#flagsCounter, #timer {
+    font-size: 3em;
+}
+
+#smiley {
+    text-align: center;
+    background-image: url("../images/smiley/bored.png");
+    background-repeat: no-repeat;
+    background-size: 4em 4em;
+    background-position: center;
+    height: 4em;
 }
 
 .cellExposed {
-    background-color: #FFFFFF; !important
+    background-color: var(--gainsboro);
+    border: 0.2em solid var(--pacific-blue);
 }
 
 .cellFlagged {
-    background-color: blue;
+    background-image: url("../images/flag.png");
 }
 
 .cellQuestioned {
-    background-color: yellow;
+    background-image: url("../images/question-mark.png");
 }
 
 .cellExposed.cellMined {
-    background-color: red;
+    background-color: var(--red-salsa);
+    background-image: url("../images/mine.png");
 }

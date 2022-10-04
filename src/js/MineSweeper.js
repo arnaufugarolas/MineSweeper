@@ -238,6 +238,7 @@ class MineSweeper {
     async _cellLeftClickHandler (s) {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             this.classList.add('cellExposed')
+
             if (this.classList.contains('cellFlagged')) {
                 this.classList.remove('cellFlagged')
                 s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
@@ -245,20 +246,22 @@ class MineSweeper {
                 this.classList.remove('cellQuestioned')
             }
 
-            const neighbours = await s._getCellNeighbours(this)
-            let numberOfMinedNeighbours = 0
+            if (!this.classList.contains('cellMined')) {
+                const neighbours = await s._getCellNeighbours(this)
+                let numberOfMinedNeighbours = 0
 
-            for (const neighbour of neighbours) {
-                if (neighbour.classList.contains('cellMined')) {
-                    numberOfMinedNeighbours++
-                }
-            }
-            this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
-
-            if (numberOfMinedNeighbours === 0 && !this.classList.contains('cellMined')) {
                 for (const neighbour of neighbours) {
-                    if (!neighbour.classList.contains('cellExposed')) {
-                        await neighbour.click()
+                    if (neighbour.classList.contains('cellMined')) {
+                        numberOfMinedNeighbours++
+                    }
+                }
+                this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
+
+                if (numberOfMinedNeighbours === 0) {
+                    for (const neighbour of neighbours) {
+                        if (!neighbour.classList.contains('cellExposed')) {
+                            await neighbour.click()
+                        }
                     }
                 }
             }

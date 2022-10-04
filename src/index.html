@@ -4,15 +4,20 @@
     <meta charset="UTF-8">
     <title>MineSweeper</title>
     <link rel="stylesheet" href="css/MineSweeper.css">
+
 </head>
 <body>
     <table id="mineSweeper">
-        <thead id="status">
-            <tr>
+        <thead>
+            <tr id="status" >
                 <td colspan="3">
-                    <span id="flagsCounter" data-test-id="flagsCounter"></span>
-                    <button id="smiley" data-test-id="smiley"></button>
-                    <span id="timer" data-test-id="timer"></span>
+                    <div id="flagsCounter" data-test-id="flagsCounter"></div>
+                </td>
+                <td colspan="2">
+                    <div id="smiley" data-test-id="smiley"></div>
+                </td>
+                <td colspan="3">
+                    <div id="timer" data-test-id="timer"></div>
                 </td>
             </tr>
         </thead>
