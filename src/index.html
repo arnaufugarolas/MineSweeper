@@ -9,15 +9,17 @@
 <body>
     <table id="mineSweeper">
         <thead>
-            <tr id="status" >
-                <td colspan="3">
-                    <div id="flagsCounter" data-test-id="flagsCounter"></div>
-                </td>
-                <td colspan="2">
-                    <div id="smiley" data-test-id="smiley"></div>
-                </td>
-                <td colspan="3">
-                    <div id="timer" data-test-id="timer"></div>
+            <tr id="status">
+                <td colspan="16">
+                    <div id="flagsDiv">
+                        <span id="flagsCounter" data-test-id="flagsCounter"></span>
+                    </div>
+                    <div id="smileyDiv">
+                        <img id="smiley" data-test-id="smiley" src="./images/smiley/bored.png" alt="smiley">
+                    </div>
+                    <div id="timerDiv">
+                        <span id="timer" data-test-id="timer"></span>
+                    </div>
                 </td>
             </tr>
         </thead>

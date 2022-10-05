@@ -7,53 +7,67 @@
     --red-salsa: #f03a47ff;
 }
 
+body {
+    background-color: var(--gainsboro);
+}
+
 #mineSweeper {
     background-color: var(--rich-black-fogra-29);
     margin: auto;
 }
 
-.cell {
-    background-color: var(--pacific-blue);
-    color: var(--rich-black-fogra-29);
-    border: 0.2em solid var(--gainsboro);
-    width: 3em;
-    height: 3em;
-    font-size: 1em;
-
-    background-repeat: no-repeat;
-    background-size: 3em 3em;
-    background-position: center;
+#flagsDiv, #timerDiv {
+    width: 40%;
+    font-size: 4em;
+    color: var(--cadet-blue-crayola);
 }
 
-#status {
-    color: var(--cadet-blue-crayola);
+#flagsDiv {
+    float: left;
+}
+
+#timerDiv {
+    float: right;
 }
 
 #timer {
     float: right;
-    text-align: right;
 }
 
-#flagsCounter {
-    float: left;
-}
-
-#flagsCounter, #timer {
-    font-size: 3em;
+#smileyDiv {
+    width: 20%;
+    display: inline-block;
 }
 
 #smiley {
-    text-align: center;
-    background-image: url("../images/smiley/bored.png");
-    background-repeat: no-repeat;
-    background-size: 4em 4em;
-    background-position: center;
+    border: 0.2em solid var(--gainsboro);
+    border-radius: 50%;
     height: 4em;
+    width: 4em;
+    display: block;
+    margin: auto;
+}
+
+.cell {
+    background-color: var(--pacific-blue);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 3em 3em;
+    border: 0.2em solid var(--gainsboro);
+    color: var(--rich-black-fogra-29);
+    width: 3em;
+    height: 3em;
+    font-size: 1em;
 }
 
 .cellExposed {
     background-color: var(--gainsboro);
     border: 0.2em solid var(--pacific-blue);
+}
+
+.cellExposed.cellMined {
+    background-color: var(--red-salsa);
+    background-image: url("../images/mine.png");
 }
 
 .cellFlagged {
@@ -62,9 +76,4 @@
 
 .cellQuestioned {
     background-image: url("../images/question-mark.png");
-}
-
-.cellExposed.cellMined {
-    background-color: var(--red-salsa);
-    background-image: url("../images/mine.png");
 }
