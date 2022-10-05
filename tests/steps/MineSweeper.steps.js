@@ -80,8 +80,8 @@ Given(/^the cell at: \((\d+), (\d+)\) is questioned$/, async (rowNumber, columnN
 
     await cell.dblclick({ button: 'right' })
 })
-Given(/^a random board of: (.*)$/, async (size) => {
-    return 'pending'
+Given(/^a random board of: (.*) with (\d+) mines$/, async (size, mines) => {
+    await page.goto(`${url}?random={size=${size},mines=${mines}}`, { waitUntil: 'load' })
 })
 /**
  * When
@@ -149,12 +149,12 @@ Then(/^no cells should be questioned$/, async () => {
 Then(/^the game should be lost$/, async () => {
     const smiley = await page.locator('[data-test-id="smiley"]')
 
-    expect(await smiley.textContent()).toBe('Sad')
+    expect(await smiley.getAttribute('alt')).toBe('Sad')
 })
 Then(/^the game should be won$/, async () => {
     const smiley = await page.locator('[data-test-id="smiley"]')
 
-    expect(await smiley.textContent()).toBe('Happy')
+    expect(await smiley.getAttribute('alt')).toBe('Happy')
 })
 Then(/^there shouldn't be any cell in the board$/, async () => {
     const board = await page.locator('[data-test-id="board"]')
@@ -246,7 +246,7 @@ Then(/^All the mines should be blown up$/, async () => {
 Then(/^the game should be restarted$/, async () => {
     const smiley = await page.locator('[data-test-id="smiley"]')
 
-    expect(await smiley.textContent()).toBe('Bored')
+    expect(await smiley.getAttribute('alt')).toBe('Bored')
 })
 Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (rowNumber, columnNumber) => {
     const cell = await getCell(rowNumber, columnNumber)
@@ -255,8 +255,17 @@ Then(/^the cell at: \((\d+), (\d+)\) shouldn't be revealed$/, async (rowNumber, 
     expect(cellClass).not.toContain('cellExposed')
 })
 Then(/^the board should have: (\d+) rows$/, async (expectedValue) => {
-    return 'pending'
+    const board = await page.locator('[data-test-id="board"]')
+    const rows = await board.locator('.row')
+
+    expect(await rows.count()).toBe(expectedValue)
 })
 Then(/^the board should have: (\d+) columns for each row$/, async (expectedValue) => {
-    return 'pending'
+    const board = await page.locator('[data-test-id="board"]')
+    const rows = await board.locator('.row')
+
+    for (let i = 0; i < await rows.count(); i++) {
+        const cells = await rows.nth(i).locator('.cell')
+        expect(await cells.count()).toBe(expectedValue)
+    }
 })

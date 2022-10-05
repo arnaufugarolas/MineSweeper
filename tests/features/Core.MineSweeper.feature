@@ -256,20 +256,20 @@ Feature: Minesweeper
     And the user wait 1 seconds
     Then the value of the timer should be: 0
 
-  @TODO #TODO the game loads with random generation, the board should have the correct length for eche sized board
+  @Finished
   Scenario Outline: the game loads with random generation, the board should have the correct length for eche sized board
-    Given a random board of: <size>
+    Given a random board of: <rows>x<columns> with 0 mines
     Then the board should have: <rows> rows
     And the board should have: <columns> columns for each row
     Examples:
-      | size  | rows | columns |
-      | 8x8   | 8    | 8       |
-      | 16x16 | 16   | 16      |
-      | 30x16 | 30   | 16      |
+      | rows | columns |
+      | 8    | 8       |
+      | 16   | 16      |
+      | 30   | 16      |
 
-  @TODO #TODO The remaining flags counter should be the number of mines
+  @Finished
   Scenario Outline: Default display screen with random scenarios: the remaining flags counter should be the number of mines
-    Given a random board of: <size>
+    Given a random board of: <size> with <remainingFlags> mines
     Then the value of the remaining flags counter should be: <remainingFlags>
     Examples:
       | size  | remainingFlags |
@@ -277,19 +277,19 @@ Feature: Minesweeper
       | 16x16 | 40             |
       | 30x16 | 99             |
 
-  @TODO #TODO The timer should be 0
+  @Finished
   Scenario: Default display screen with random scenarios: timer should be 0
-    Given a random board of: <size>
+    Given a random board of: 8x8 with 10 mines
     Then the value of the timer should be: 0
 
-  @TODO #TODO All the cells should be hidden and not flagged or questioned
+  @Finished
   Scenario Outline: Default display screen with random scenarios: cells states
-    Given a random board of: <size>
+    Given a random board of: <size> with <mines> mines
     Then no cells should be exposed
     And no cells should be flagged
     And no cells should be questioned
     Examples:
-      | size  |
-      | 8x8   |
-      | 16x16 |
-      | 30x16 |
+      | size  | mines |
+      | 8x8   | 10    |
+      | 16x16 | 40    |
+      | 30x16 | 99    |
