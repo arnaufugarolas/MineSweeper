@@ -17,7 +17,7 @@ window.addEventListener('load', function () {
 
 class MineSweeper {
     /**
-     * @param gameOptions {Map} - The game options object.
+     * @param gameOptions {Map}
      */
     constructor (gameOptions) {
         const s = this
@@ -39,6 +39,25 @@ class MineSweeper {
         s._createBoard()
     }
 
+    _setSmileyState (state) {
+        const s = this
+
+        switch (state) {
+            case 'happy':
+                s._smiley.src = './images/smiley/happy.png'
+                s._smiley.alt = 'Happy'
+                break
+            case 'sad':
+                s._smiley.src = './images/smiley/sad.png'
+                s._smiley.alt = 'Sad'
+                break
+            case 'bored':
+                s._smiley.src = './images/smiley/bored.png'
+                s._smiley.alt = 'Bored'
+                break
+        }
+    }
+
     _createBoard () {
         const s = this
         const boardType = s._gameOptions.get('boardType')
@@ -57,7 +76,7 @@ class MineSweeper {
         }
 
         s._timer.textContent = '0'
-        s._smiley.textContent = 'Bored'
+        s._setSmileyState('bored')
     }
 
     /**
@@ -172,8 +191,7 @@ class MineSweeper {
                 for (const mine of mines) {
                     mine.classList.add('cellExposed')
                 }
-                s._smiley.textContent = 'Sad'
-
+                s._setSmileyState('sad')
                 clearInterval(s._timerInterval)
 
                 return 'lost'
@@ -181,7 +199,7 @@ class MineSweeper {
         }
 
         if (exposedCells.length === numberOfCells - numberOfMines) {
-            s._smiley.textContent = 'Happy'
+            s._setSmileyState('happy')
             clearInterval(s._timerInterval)
             return 'win'
         }
@@ -238,6 +256,7 @@ class MineSweeper {
     async _cellLeftClickHandler (s) {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             this.classList.add('cellExposed')
+
             if (this.classList.contains('cellFlagged')) {
                 this.classList.remove('cellFlagged')
                 s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
@@ -245,20 +264,22 @@ class MineSweeper {
                 this.classList.remove('cellQuestioned')
             }
 
-            const neighbours = await s._getCellNeighbours(this)
-            let numberOfMinedNeighbours = 0
+            if (!this.classList.contains('cellMined')) {
+                const neighbours = await s._getCellNeighbours(this)
+                let numberOfMinedNeighbours = 0
 
-            for (const neighbour of neighbours) {
-                if (neighbour.classList.contains('cellMined')) {
-                    numberOfMinedNeighbours++
-                }
-            }
-            this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
-
-            if (numberOfMinedNeighbours === 0 && !this.classList.contains('cellMined')) {
                 for (const neighbour of neighbours) {
-                    if (!neighbour.classList.contains('cellExposed')) {
-                        await neighbour.click()
+                    if (neighbour.classList.contains('cellMined')) {
+                        numberOfMinedNeighbours++
+                    }
+                }
+                this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
+
+                if (numberOfMinedNeighbours === 0) {
+                    for (const neighbour of neighbours) {
+                        if (!neighbour.classList.contains('cellExposed')) {
+                            await neighbour.click()
+                        }
                     }
                 }
             }
@@ -303,7 +324,7 @@ class MineSweeper {
 
     /**
      * @param s {MineSweeper}
-     * @this {HTMLButtonElement}
+     * @this {HTMLImageElement}
      */
     _smileyClickHandler (s) {
         s._board.innerHTML = ''
