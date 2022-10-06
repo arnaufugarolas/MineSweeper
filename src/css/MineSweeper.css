@@ -106,7 +106,7 @@ body {
     transition-delay: 0s;
 }
 
-.modal-bg {
+.modalBackground {
     position: absolute;
     background: var(--pewter-blue);
     opacity: 75%;
@@ -114,14 +114,14 @@ body {
     height: 100%;
 }
 
-.modal-container {
+.modalContainer {
     border-radius: 10px;
     background: var(--gainsboro);
     position: relative;
     padding: 3%;
 }
 
-.modal-close {
+.modalClose {
     position: absolute;
     right: 15px;
     top: 15px;

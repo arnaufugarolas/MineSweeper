@@ -1,4 +1,9 @@
 window.addEventListener('load', function () {
+    onLoad()
+    addEvents()
+})
+
+function onLoad () {
     const params = new URLSearchParams(location.search)
     const gameOptions = new Map([['boardType', 'default'], ['data', '']])
     if (params.has('mock')) {
@@ -13,7 +18,51 @@ window.addEventListener('load', function () {
 
     const game = new MineSweeper(gameOptions)
     game.init()
-})
+}
+
+function addEvents () {
+    document.getElementById('customRandomForm').addEventListener('submit', customRandomForm)
+
+    document.getElementById('customRandomButton').addEventListener('click', function () {
+        document.getElementById('customRandomModal').classList.add('open')
+    })
+
+    document.getElementById('customRandomClose').addEventListener('click', function () {
+        document.getElementById('customRandomModal').classList.remove('open')
+    })
+
+    document.getElementById('customMockDataForm').addEventListener('submit', customMockDataForm)
+
+    document.getElementById('customMockDataButton').addEventListener('click', function () {
+        document.getElementById('customMockDataModal').classList.add('open')
+    })
+
+    document.getElementById('customMockDataClose').addEventListener('click', function () {
+        document.getElementById('customMockDataModal').classList.remove('open')
+    })
+}
+
+function customMockDataForm (e) {
+    let data = document.getElementById('customMockDataTextarea').value
+
+    e.preventDefault()
+    data = data.replace(/\s/g, '')
+    data = data.replace(/^\|/, '')
+    data = data.replace(/\|$/, '')
+    data = data.replace(/\|\|/g, '^')
+    window.location.href = `?mock={${data}}`
+}
+
+function customRandomForm (e) {
+    const columns = parseInt(document.getElementById('customRandomColumns').value)
+    const rows = parseInt(document.getElementById('customRandomRows').value)
+    const mines = parseInt(document.getElementById('customRandomMines').value)
+    const modal = document.getElementById('customRandomModal')
+
+    e.preventDefault()
+    window.location.href = `?random={size=${columns}x${rows},mines=${mines}}`
+    modal.classList.remove('open')
+}
 
 class MineSweeper {
     constructor (gameOptions) {
@@ -79,7 +128,6 @@ class MineSweeper {
     _createBoardRandom (options) {
         const s = this
         const size = options.get('size').split('x')
-        console.log(size)
         const columnsNumber = parseInt(size[0])
         const rowsNumber = parseInt(size[1])
 
@@ -139,8 +187,9 @@ class MineSweeper {
 
     _createBoardMockData (data) {
         const s = this
-        const rows = data.split('^')
         let numberOfMines = 0
+        data = data.replace(/[{}]/g, '')
+        const rows = data.split('^')
 
         document.getElementById('status').setAttribute('colspan', rows[0].length.toString())
 
@@ -266,9 +315,9 @@ class MineSweeper {
     }
 
     /**
-     * @param s {MineSweeper}
-     * @this {HTMLButtonElement}
-     */
+         * @param s {MineSweeper}
+         * @this {HTMLButtonElement}
+         */
     _cellRightClickHandler (s) {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             if (this.classList.contains('cellFlagged')) {

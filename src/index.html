@@ -3,58 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <title>MineSweeper</title>
-    <link rel="stylesheet" href="css/MineSweeper.css">
+    <link href="css/MineSweeper.css" rel="stylesheet">
 
 </head>
 <body>
 <div id="menu">
     <div id="menuTitle">MineSweeper</div>
     <div>
-        <a href="?random={size=8x8,mines=10}"><button id="btn8x8">8x8 10 Mines</button></a>
+        <a href="?random={size=8x8,mines=10}">
+            <button id="btn8x8">8x8 10 Mines</button>
+        </a>
     </div>
     <div>
-        <a href="?random={size=16x16,mines=40}"><button id="btn16x16">16x16 40 Mines</button></a>
+        <a href="?random={size=16x16,mines=40}">
+            <button id="btn16x16">16x16 40 Mines</button>
+        </a>
     </div>
     <div>
-        <a href="?random={size=30x16,mines=40}"><button id="btn30x16">30x16 99 Mines</button></a>
+        <a href="?random={size=30x16,mines=40}">
+            <button id="btn30x16">30x16 99 Mines</button>
+        </a>
     </div>
     <div>
-        <button id="btnCustomRandom">Custom Random</button>
+        <button id="customRandomButton">Custom Random</button>
     </div>
     <div>
-        <button id="btnWriteMockData">Write Mock Data</button>
+        <button id="customMockDataButton">Write Mock Data</button>
     </div>
 </div>
 
-<div class="modal" id="modal-custom-random">
-    <div class="modal-bg modal-exit"></div>
-    <div class="modal-container">
-        <label for="columnsNumber">Columns: </label><input type="text" id="columnsNumber" placeholder="Number of columns">
-        <label for="rowsNumber">Rows: </label><input type="text" id="rowsNumber" placeholder="Number of rows">
-        <label for="minesNumber">Mines: </label><input type="text" id="minesNumber" placeholder="Number of mines">
-        <button id="btnCustomRandomSubmit">Create Board</button>
-        <button class="modal-close modal-exit">X</button>
+<div class="modal" id="customRandomModal">
+    <div class="modalBackground"></div>
+    <div class="modalContainer">
+        <form id="customRandomForm">
+            <div>
+                <label for="customRandomColumns">Columns: </label>
+                <input id="customRandomColumns" name="Columns" placeholder="Number of columns" required type="number">
+            </div>
+            <div>
+                <label for="customRandomRows">Rows: </label>
+                <input id="customRandomRows" name="Rows" placeholder="Number of rows" required type="number">
+            </div>
+            <div>
+                <label for="customRandomMines">Mines: </label>
+                <input id="customRandomMines" name="Mines" placeholder="Number of mines" required type="number">
+            </div>
+            <div>
+                <button id="customRandomSubmit" name="CreateBoard" type="submit" value="Create">Create Board</button>
+            </div>
+
+            <button class="modalClose" id="customRandomClose" type="button">X</button>
+        </form>
+
     </div>
 </div>
 
+<div class="modal" id="customMockDataModal">
+    <div class="modalBackground"></div>
+    <div class="modalContainer">
+        <form id="customMockDataForm">
+            <div>
+                <label for="customMockDataTextarea"></label><textarea id="customMockDataTextarea" name="MockData" placeholder="Mock data" rows="10" cols="30" required></textarea>
+            </div>
+            <div>
+                <button id="customMockDataSubmit" name="CreateBoard" type="submit" value="Create">Create Board</button>
+            </div>
+
+            <button class="modalClose" id="customMockDataClose" type="button">X</button>
+        </form>
+
+    </div>
+</div>
 
 <table id="mineSweeper">
     <thead>
     <tr>
-        <td id="status" colspan="16">
+        <td colspan="16" id="status">
             <div id="flagsDiv">
-                <span id="flagsCounter" data-test-id="flagsCounter"></span>
+                <span data-test-id="flagsCounter" id="flagsCounter"></span>
             </div>
             <div id="smileyDiv">
-                <img id="smiley" data-test-id="smiley" src="./images/smiley/bored.png" alt="smiley">
+                <img alt="smiley" data-test-id="smiley" id="smiley" src="./images/smiley/bored.png">
             </div>
             <div id="timerDiv">
-                <span id="timer" data-test-id="timer"></span>
+                <span data-test-id="timer" id="timer"></span>
             </div>
         </td>
     </tr>
     </thead>
-    <tbody id="board" data-test-id="board">
+    <tbody data-test-id="board" id="board">
 
     </tbody>
 </table>

@@ -258,14 +258,14 @@ Feature: Minesweeper
 
   @Finished
   Scenario Outline: the game loads with random generation, the board should have the correct length for eche sized board
-    Given a random board of: <rows>x<columns> with 0 mines
+    Given a random board of: <columns>x<rows> with 0 mines
     Then the board should have: <rows> rows
     And the board should have: <columns> columns for each row
     Examples:
-      | rows | columns |
-      | 8    | 8       |
-      | 16   | 16      |
-      | 30   | 16      |
+      | columns | rows |
+      | 8       | 8    |
+      | 16      | 16   |
+      | 30      | 16   |
 
   @Finished
   Scenario Outline: Default display screen with random scenarios: the remaining flags counter should be the number of mines

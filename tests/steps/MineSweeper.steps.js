@@ -48,7 +48,7 @@ Given(/^a user opens the app$/, async () => {
     await page.goto(url, { waitUntil: 'load' })
 })
 Given(/^a board generated with this mock data: (.*)$/, async (board) => {
-    await page.goto(`${url}?mock=${board}`, { waitUntil: 'load' })
+    await page.goto(`${url}?mock={${board}}`, { waitUntil: 'load' })
 })
 Given(/^the cell at: \((\d+), (\d+)\) is flagged$/, async (rowNumber, columnNumber) => {
     const cell = await getCell(rowNumber, columnNumber)
