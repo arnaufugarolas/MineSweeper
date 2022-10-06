@@ -3,11 +3,6 @@ const { expect } = require('@playwright/test')
 
 const url = 'http://localhost:8080/MineSweeper/index.html'
 
-/**
- * @param rowNumber {number}
- * @param columnNumber {number}
- * @returns {Promise<Locator>}
- */
 async function getCell (rowNumber, columnNumber) {
     const board = await page.locator('[data-test-id="board"]')
     const row = await board.locator('tr').nth(rowNumber - 1)
@@ -19,11 +14,6 @@ async function getCell (rowNumber, columnNumber) {
     return null
 }
 
-/**
- * @param rowNumber {number}
- * @param columnNumber {number}
- * @returns {Promise<Locator[]>}
- */
 async function getCellsAround (rowNumber, columnNumber) {
     const cells = []
 
@@ -39,22 +29,12 @@ async function getCellsAround (rowNumber, columnNumber) {
     return cells
 }
 
-/**
- * @param rowNumber {number}
- * @param columnNumber {number}
- * @returns {Promise<boolean>}
- */
 async function cellIsFlagged (rowNumber, columnNumber) {
     const cell = await getCell(rowNumber, columnNumber)
 
     return (await cell.getAttribute('class')).includes('cellFlagged')
 }
 
-/**
- * @param rowNumber {number}
- * @param columnNumber {number}
- * @returns {Promise<boolean>}
- */
 async function cellIsQuestioned (rowNumber, columnNumber) {
     const cell = await getCell(rowNumber, columnNumber)
 
@@ -211,13 +191,15 @@ Then(/^the board should be:$/, async (table) => {
         }
     }
 
-    expect(await rows.count()).toBe(expectedBoard.length) // check number of rows
-    expect(numberOfCellsForRow).toBe(expectedBoard[0].length) // check number of columns
+    expect(await rows.count()).toBe(expectedBoard.length)
+    expect(numberOfCellsForRow).toBe(expectedBoard[0].length)
 })
 Then(/^all the cells around: \((\d+), (\d+)\) should be revealed$/, async (rowNumber, columnNumber) => {
     const cellsAround = await getCellsAround(rowNumber, columnNumber)
+
     for (const cell of cellsAround) {
         const cellClass = await cell.getAttribute('class')
+
         expect(cellClass).toContain('cellExposed')
     }
 })
