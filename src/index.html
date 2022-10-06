@@ -7,26 +7,57 @@
 
 </head>
 <body>
-    <table id="mineSweeper">
-        <thead>
-            <tr id="status">
-                <td colspan="16">
-                    <div id="flagsDiv">
-                        <span id="flagsCounter" data-test-id="flagsCounter"></span>
-                    </div>
-                    <div id="smileyDiv">
-                        <img id="smiley" data-test-id="smiley" src="./images/smiley/bored.png" alt="smiley">
-                    </div>
-                    <div id="timerDiv">
-                        <span id="timer" data-test-id="timer"></span>
-                    </div>
-                </td>
-            </tr>
-        </thead>
-        <tbody id="board" data-test-id="board">
+<div id="menu">
+    <div id="menuTitle">MineSweeper</div>
+    <div>
+        <a href="?random={size=8x8,mines=10}"><button id="btn8x8">8x8 10 Mines</button></a>
+    </div>
+    <div>
+        <a href="?random={size=16x16,mines=40}"><button id="btn16x16">16x16 40 Mines</button></a>
+    </div>
+    <div>
+        <a href="?random={size=30x16,mines=40}"><button id="btn30x16">30x16 99 Mines</button></a>
+    </div>
+    <div>
+        <button id="btnCustomRandom">Custom Random</button>
+    </div>
+    <div>
+        <button id="btnWriteMockData">Write Mock Data</button>
+    </div>
+</div>
 
-        </tbody>
-    </table>
+<div class="modal" id="modal-custom-random">
+    <div class="modal-bg modal-exit"></div>
+    <div class="modal-container">
+        <label for="columnsNumber">Columns: </label><input type="text" id="columnsNumber" placeholder="Number of columns">
+        <label for="rowsNumber">Rows: </label><input type="text" id="rowsNumber" placeholder="Number of rows">
+        <label for="minesNumber">Mines: </label><input type="text" id="minesNumber" placeholder="Number of mines">
+        <button id="btnCustomRandomSubmit">Create Board</button>
+        <button class="modal-close modal-exit">X</button>
+    </div>
+</div>
+
+
+<table id="mineSweeper">
+    <thead>
+    <tr>
+        <td id="status" colspan="16">
+            <div id="flagsDiv">
+                <span id="flagsCounter" data-test-id="flagsCounter"></span>
+            </div>
+            <div id="smileyDiv">
+                <img id="smiley" data-test-id="smiley" src="./images/smiley/bored.png" alt="smiley">
+            </div>
+            <div id="timerDiv">
+                <span id="timer" data-test-id="timer"></span>
+            </div>
+        </td>
+    </tr>
+    </thead>
+    <tbody id="board" data-test-id="board">
+
+    </tbody>
+</table>
 </body>
 <script src="js/MineSweeper.js"></script>
 </html>
