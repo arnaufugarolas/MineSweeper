@@ -68,61 +68,39 @@ class MineSweeper {
     constructor (gameOptions) {
         const s = this
 
-        s._board = document.getElementById('board')
-        s._flagsCounter = document.getElementById('flagsCounter')
-        s._timer = document.getElementById('timer')
-        s._smiley = document.getElementById('smiley')
-        s._smileyEventHandler(s._smiley)
+        s._board = []
+        s._flagsCounter = 0
+        s._timer = 0
+        s._smiley = ''
         s._gameOptions = gameOptions
-        s._timerInterval = 0
     }
 
     init () {
         const s = this
 
         s._gameStatus = 'standby'
-        clearInterval(s._timerInterval)
+        clearInterval(s._timer)
         s._createBoard()
-    }
-
-    _setSmileyState (state) {
-        const s = this
-
-        switch (state) {
-            case 'happy':
-                s._smiley.src = './images/smiley/happy.png'
-                s._smiley.alt = 'Happy'
-                break
-            case 'sad':
-                s._smiley.src = './images/smiley/sad.png'
-                s._smiley.alt = 'Sad'
-                break
-            case 'bored':
-                s._smiley.src = './images/smiley/bored.png'
-                s._smiley.alt = 'Bored'
-                break
-        }
     }
 
     _createBoard () {
         const s = this
-        const boardType = s._gameOptions.get('boardType')
         const data = s._gameOptions.get('data')
+        s._timer = '0'
+        s._smiley = 'bored'
 
-        switch (boardType) {
+        switch (s._gameOptions.get('boardType')) {
             case 'mock':
-                s._createBoardMockData(data)
+                s._board = s._createBoardMockData(data)
                 break
             case 'random':
-                s._createBoardRandom(s._dataToOptionsMap(data))
+                s._board = s._createBoardRandom(s._dataToOptionsMap(data))
                 break
             case 'default':
-                s._flagsCounter.textContent = '0'
                 break
         }
-
-        s._timer.textContent = '0'
-        s._setSmileyState('bored')
+        s._createBoardCalculateValues(s._board)
+        s._printBoardHTML(s._board)
     }
 
     _createBoardRandom (options) {
@@ -130,43 +108,35 @@ class MineSweeper {
         const size = options.get('size').split('x')
         const columnsNumber = parseInt(size[0])
         const rowsNumber = parseInt(size[1])
-
-        document.getElementById('status').setAttribute('colspan', columnsNumber.toString())
+        const board = []
 
         for (let i = 0; i < rowsNumber; i++) {
-            const tr = document.createElement('tr')
-            tr.setAttribute('class', 'row')
+            const row = []
 
             for (let j = 0; j < columnsNumber; j++) {
-                const td = document.createElement('td')
-                const cell = document.createElement('button')
-
-                cell.textContent = '\xa0'
-                cell.classList.add('cell')
-                s._cellEventHandler(cell)
-
-                td.appendChild(cell)
-                tr.appendChild(td)
+                row.push(...new Cell())
             }
-            s._board.appendChild(tr)
+
+            board.push(...[row])
         }
-        s._createBoardRandomAddMines(options)
+        s._createBoardRandomAddMines(board, options.get('mines'))
+
+        return board
     }
 
-    _createBoardRandomAddMines (options) {
+    _createBoardRandomAddMines (board, mines) {
         const s = this
-        const columnsNumber = parseInt(options.get('size').split('x')[0])
-        const rowsNumber = parseInt(options.get('size').split('x')[1])
-        let mines = options.get('mines')
-        s._flagsCounter.textContent = mines
+        const rowsNumber = board.length
+        const columnsNumber = board[0].length
+        s._flagsCounter = mines
 
         while (mines > 0) {
             const row = Math.floor(Math.random() * rowsNumber)
             const column = Math.floor(Math.random() * columnsNumber)
-            const cell = s._board.rows[row].cells[column].firstChild
+            const cell = board[row][column]
 
-            if (!cell.classList.contains('cellMined')) {
-                cell.classList.add('cellMined')
+            if (!cell.mined) {
+                cell.mined = true
                 mines--
             }
         }
@@ -187,34 +157,82 @@ class MineSweeper {
 
     _createBoardMockData (data) {
         const s = this
-        let numberOfMines = 0
-        data = data.replace(/[{}]/g, '')
-        const rows = data.split('^')
+        const numberOfMines = 0
+        const board = []
+        const mockedBoard = data.replace(/[{}]/g, '').split('^')
 
-        document.getElementById('status').setAttribute('colspan', rows[0].length.toString())
-
-        for (const row of rows) {
-            const tr = document.createElement('tr')
-            tr.setAttribute('class', 'row')
-
-            for (const column of row) {
-                const td = document.createElement('td')
-                const cell = document.createElement('button')
-
-                cell.textContent = '\xa0'
-                cell.classList.add('cell')
-                if (column === 'M') {
-                    cell.classList.add('cellMined')
-                    numberOfMines++
-                }
-                s._cellEventHandler(cell)
-
-                td.appendChild(cell)
-                tr.appendChild(td)
-            }
-            s._board.appendChild(tr)
+        for (const row of mockedBoard) {
+            mockedBoard[mockedBoard.indexOf(row)] = row.split('')
         }
-        s._flagsCounter.textContent = numberOfMines.toString()
+
+        for (let i = 0; i < mockedBoard.length; i++) {
+            const row = []
+
+            for (let j = 0; j < mockedBoard[0].length; j++) {
+                const cell = new Cell()
+
+                if (mockedBoard[i][j].match(/MFQ/)) { cell.mined = true }
+                if (mockedBoard[i][j].toUpper === 'F') {
+                    cell.tagged = true
+                    cell.tag = 'flag'
+                } else if (mockedBoard[i][j].toUpper === 'Q') {
+                    cell.tagged = true
+                    cell.tag = 'question'
+                }
+
+                row.push(...[cell])
+            }
+
+            board.push(...[row])
+        }
+
+        s._flagsCounter = numberOfMines
+        return board
+    }
+
+    _createBoardCalculateValues (board) {
+        for (const row of board) {
+            for (const cell of row) {
+                for (let i = -1; i < 2; i++) {
+                    for (let j = -1; j < 2; j++) {
+                        if (board[board.indexOf(row) + i] !== undefined && board[board.indexOf(row) + i][row.indexOf(cell) + j] !== undefined) {
+                            if (board[board.indexOf(row) + i][row.indexOf(cell) + j].mined) {
+                                cell.value++
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    _printBoardHTML () {
+        const s = this
+
+        for (const row of s._board) {
+            const rowHTML = document.createElement('tr')
+            rowHTML.classList.add('row')
+            for (const cell of row) {
+                const cellContainerHTML = document.createElement('td')
+                const cellHTML = document.createElement('button')
+                cellHTML.classList.add('cell')
+
+                cellHTML.addEventListener('click', s._cellExposeEventHandler.bind(cell, s, cellHTML))
+
+                cellContainerHTML.appendChild(cellHTML)
+                rowHTML.appendChild(cellContainerHTML)
+            }
+            document.getElementById('board').appendChild(rowHTML)
+        }
+    }
+
+    _cellExposeEventHandler (s, cellHTML) {
+        const cell = this
+
+        cell.revealed = true
+        cellHTML.classList.add('cellExposed')
+        cellHTML.textContent = cell.value
+        console.log(cell)
     }
 
     _checkGameStatus () {
@@ -271,7 +289,7 @@ class MineSweeper {
         return neighbours
     }
 
-    _cellFirstsClickHandler (s) {
+/*    _cellFirstsClickHandler (s) {
         if (s._gameStatus === 'standby') {
             s._gameStatus = 'playing'
             s._timerInterval = setInterval(function () {
@@ -314,10 +332,10 @@ class MineSweeper {
         }
     }
 
-    /**
+    /!**
          * @param s {MineSweeper}
          * @this {HTMLButtonElement}
-         */
+         *!/
     _cellRightClickHandler (s) {
         if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
             if (this.classList.contains('cellFlagged')) {
@@ -355,5 +373,35 @@ class MineSweeper {
         const s = this
 
         smiley.addEventListener('click', s._smileyClickHandler.bind(smiley, s))
+    }
+        _setSmileyState (state) {
+        const s = this
+
+        switch (state) {
+            case 'happy':
+                s._smiley.src = './images/smiley/happy.png'
+                s._smiley.alt = 'Happy'
+                break
+            case 'sad':
+                s._smiley.src = './images/smiley/sad.png'
+                s._smiley.alt = 'Sad'
+                break
+            case 'bored':
+                s._smiley.src = './images/smiley/bored.png'
+                s._smiley.alt = 'Bored'
+                break
+        }
+    }
+
+    */
+}
+
+class Cell {
+    constructor () {
+        this.mined = false
+        this.tagged = false
+        this.tag = 'none'
+        this.revealed = false
+        this.value = 0
     }
 }
