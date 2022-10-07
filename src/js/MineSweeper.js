@@ -69,25 +69,24 @@ class MineSweeper {
         const s = this
 
         s._board = []
-        s._flagsCounter = 0
-        s._timer = 0
-        s._smiley = ''
+        s._flagsCounter = null
+        s._timerInterval = null
+        s._smiley = null
+        s._gameStatus = null
         s._gameOptions = gameOptions
     }
 
     init () {
         const s = this
-
         s._gameStatus = 'standby'
-        clearInterval(s._timer)
+
+        clearInterval(s._timerInterval)
         s._createBoard()
     }
 
     _createBoard () {
         const s = this
         const data = s._gameOptions.get('data')
-        s._timer = '0'
-        s._smiley = 'bored'
 
         switch (s._gameOptions.get('boardType')) {
             case 'mock':
@@ -97,8 +96,12 @@ class MineSweeper {
                 s._board = s._createBoardRandom(s._dataToOptionsMap(data))
                 break
             case 'default':
+                s._flagsCounter = 0
                 break
         }
+
+        s._timer = 0
+        s._smiley = 'bored'
         s._createBoardCalculateValues(s._board)
         s._printBoardHTML(s._board)
     }
@@ -106,15 +109,13 @@ class MineSweeper {
     _createBoardRandom (options) {
         const s = this
         const size = options.get('size').split('x')
-        const columnsNumber = parseInt(size[0])
-        const rowsNumber = parseInt(size[1])
         const board = []
 
-        for (let i = 0; i < rowsNumber; i++) {
+        for (let i = 0; i < parseInt(size[1]); i++) {
             const row = []
 
-            for (let j = 0; j < columnsNumber; j++) {
-                row.push(...new Cell())
+            for (let j = 0; j < parseInt(size[0]); j++) {
+                row.push(new Cell([i, j]))
             }
 
             board.push(...[row])
@@ -126,13 +127,11 @@ class MineSweeper {
 
     _createBoardRandomAddMines (board, mines) {
         const s = this
-        const rowsNumber = board.length
-        const columnsNumber = board[0].length
         s._flagsCounter = mines
 
         while (mines > 0) {
-            const row = Math.floor(Math.random() * rowsNumber)
-            const column = Math.floor(Math.random() * columnsNumber)
+            const row = Math.floor(Math.random() * board.length)
+            const column = Math.floor(Math.random() * board[0].length)
             const cell = board[row][column]
 
             if (!cell.mined) {
@@ -157,7 +156,7 @@ class MineSweeper {
 
     _createBoardMockData (data) {
         const s = this
-        const numberOfMines = 0
+        let numberOfMines = 0
         const board = []
         const mockedBoard = data.replace(/[{}]/g, '').split('^')
 
@@ -169,9 +168,11 @@ class MineSweeper {
             const row = []
 
             for (let j = 0; j < mockedBoard[0].length; j++) {
-                const cell = new Cell()
-
-                if (mockedBoard[i][j].match(/MFQ/)) { cell.mined = true }
+                const cell = new Cell([i, j])
+                if (mockedBoard[i][j].match(/[MFQ]/)) {
+                    numberOfMines++
+                    cell.mined = true
+                }
                 if (mockedBoard[i][j].toUpper === 'F') {
                     cell.tagged = true
                     cell.tag = 'flag'
@@ -180,7 +181,7 @@ class MineSweeper {
                     cell.tag = 'question'
                 }
 
-                row.push(...[cell])
+                row.push(cell)
             }
 
             board.push(...[row])
@@ -208,196 +209,193 @@ class MineSweeper {
 
     _printBoardHTML () {
         const s = this
+        const boardHTML = document.getElementById('board')
+        const smiley = document.getElementById('smiley')
+
+        boardHTML.innerHTML = ''
+        document.getElementById('timer').innerHTML = s._timer
+        smiley.addEventListener('click', function () { s.init() })
+        document.getElementById('flagsCounter').innerHTML = s._flagsCounter
+        document.getElementById('status').colSpan = s._board[0].length
+
+        switch (s._smiley) {
+            case 'happy':
+                smiley.src = './images/smiley/happy.png'
+                smiley.alt = 'Happy'
+                break
+            case 'sad':
+                smiley.src = './images/smiley/sad.png'
+                smiley.alt = 'Sad'
+                break
+            case 'bored':
+                smiley.src = './images/smiley/bored.png'
+                smiley.alt = 'Bored'
+                break
+        }
 
         for (const row of s._board) {
             const rowHTML = document.createElement('tr')
+
             rowHTML.classList.add('row')
             for (const cell of row) {
                 const cellContainerHTML = document.createElement('td')
                 const cellHTML = document.createElement('button')
+
                 cellHTML.classList.add('cell')
 
-                cellHTML.addEventListener('click', s._cellExposeEventHandler.bind(cell, s, cellHTML))
+                if (cell.revealed) {
+                    cellHTML.classList.add('cellExposed')
+                    if (cell.mined) {
+                        cellHTML.classList.add('cellMined')
+                    } else {
+                        cellHTML.innerHTML = cell.value > 0 ? cell.value : '\xa0'
+                    }
+                } else if (cell.tagged) {
+                    switch (cell.tag) {
+                        case 'flag':
+                            cellHTML.classList.add('cellFlagged')
+                            break
+                        case 'question':
+                            cellHTML.classList.add('cellQuestioned')
+                            break
+                    }
+                    cellHTML.classList.add(cell.tag)
+                }
+
+                s._cellEventHandler(cell, cellHTML)
 
                 cellContainerHTML.appendChild(cellHTML)
                 rowHTML.appendChild(cellContainerHTML)
             }
-            document.getElementById('board').appendChild(rowHTML)
+            boardHTML.appendChild(rowHTML)
         }
     }
 
-    _cellExposeEventHandler (s, cellHTML) {
+    _cellEventHandler (cell, cellHTML, event) {
+        const s = this
+
+        cellHTML.addEventListener('click', s._cellFirstActionEventHandler.bind(s))
+        cellHTML.addEventListener('click', s._cellExposeEventHandler.bind(cell, s))
+        cellHTML.addEventListener('contextmenu', s._cellFirstActionEventHandler.bind(s))
+        cellHTML.addEventListener('contextmenu', s._cellTagEventHandler.bind(cell, s))
+    }
+
+    /**
+     * @this {Cell}
+     */
+    _cellTagEventHandler (s, e) {
+        e.preventDefault()
+
+        if (s._gameStatus === 'playing' && !this.revealed) {
+            if (this.tagged) {
+                if (this.tag === 'flag') {
+                    this.tag = 'question'
+                    s._flagsCounter++
+                } else {
+                    this.tagged = false
+                    this.tag = 'none'
+                }
+            } else {
+                this.tagged = true
+                this.tag = 'flag'
+                s._flagsCounter--
+            }
+            s._printBoardHTML()
+        }
+    }
+
+    _cellFirstActionEventHandler () {
+        const s = this
+
+        if (s._gameStatus === 'standby') {
+            s._gameStatus = 'playing'
+            s._timerInterval = setInterval(function () {
+                if (s._gameStatus === 'playing') {
+                    s._timer++
+                    document.getElementById('timer').innerHTML = s._timer
+                } else {
+                    clearInterval(s._timerInterval)
+                }
+            }, 1000)
+        }
+    }
+
+    /**
+     * @this {Cell}
+    */
+    _cellExposeEventHandler (s) {
         const cell = this
 
+        if (s._gameStatus === 'playing') {
+            if (cell.mined) {
+                s._gameStatus = 'lost'
+            }
+            s._cellExpose(cell)
+            s._checkGameStatus()
+            s._printBoardHTML()
+        }
+    }
+
+    _cellExpose (cell) {
+        const s = this
         cell.revealed = true
-        cellHTML.classList.add('cellExposed')
-        cellHTML.textContent = cell.value
-        console.log(cell)
+        if (cell.value !== 0 || cell.mined) { return }
+
+        for (let i = -1; i < 2; i++) {
+            for (let j = -1; j < 2; j++) {
+                if (cell.cords[0] + i >= 0 && cell.cords[0] + i < s._board.length) {
+                    if (cell.cords[1] + j >= 0 && cell.cords[1] + j < s._board[0].length) {
+                        const neighbour = s._board[cell.cords[0] + i][cell.cords[1] + j]
+
+                        if (!neighbour.revealed) {
+                            neighbour.revealed = true
+                            s._cellExpose(neighbour)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     _checkGameStatus () {
         const s = this
-        const exposedCells = document.getElementsByClassName('cellExposed')
-        const numberOfMines = document.getElementsByClassName('cellMined').length
-        const numberOfCells = document.getElementsByClassName('cell').length
+        const exposedCells = []
+        const minedCells = []
+        let numberOfCells = 0
 
-        for (const cell of exposedCells) {
-            if (cell.classList.contains('cellMined')) {
-                const mines = document.getElementsByClassName('cellMined')
-
-                for (const mine of mines) {
-                    mine.classList.add('cellExposed')
+        for (const row of s._board) {
+            for (const cell of row) {
+                if (cell.revealed) {
+                    exposedCells.push(...[cell])
                 }
-                s._setSmileyState('sad')
-                clearInterval(s._timerInterval)
+                if (cell.mined) {
+                    minedCells.push(...[cell])
+                }
+                numberOfCells++
+            }
+        }
 
+        for (const mine of minedCells) {
+            if (mine.revealed) {
+                s._smiley = 'sad'
+                clearInterval(s._timerInterval)
                 return 'lost'
             }
         }
 
-        if (exposedCells.length === numberOfCells - numberOfMines) {
-            s._setSmileyState('happy')
+        if (exposedCells.length === numberOfCells - minedCells.length) {
+            s._smiley = 'happy'
             clearInterval(s._timerInterval)
             return 'win'
         }
 
         return 'playing'
     }
-
-    async _getCellNeighbours (cell) {
-        const s = this
-        const cellRow = cell.parentNode.parentNode
-        const cellColumn = cell.parentNode
-        const cellRowNumber = cellRow.rowIndex - 1
-        const cellColumnNumber = cellColumn.cellIndex
-        const neighbours = []
-
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) {
-                    continue
-                }
-                const row = cellRowNumber + i
-                const column = cellColumnNumber + j
-
-                if (row >= 0 && row < s._board.rows.length && column >= 0 && column < s._board.rows[row].cells.length) {
-                    neighbours.push(s._board.rows[row].cells[column].firstChild)
-                }
-            }
-        }
-
-        return neighbours
-    }
-
-/*    _cellFirstsClickHandler (s) {
-        if (s._gameStatus === 'standby') {
-            s._gameStatus = 'playing'
-            s._timerInterval = setInterval(function () {
-                s._timer.textContent = (parseInt(s._timer.textContent) + 1).toString()
-            }, 1000)
-        }
-    }
-
-    async _cellLeftClickHandler (s) {
-        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-            this.classList.add('cellExposed')
-
-            if (this.classList.contains('cellFlagged')) {
-                this.classList.remove('cellFlagged')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
-            } else if (this.classList.contains('cellQuestioned')) {
-                this.classList.remove('cellQuestioned')
-            }
-
-            if (!this.classList.contains('cellMined')) {
-                const neighbours = await s._getCellNeighbours(this)
-                let numberOfMinedNeighbours = 0
-
-                for (const neighbour of neighbours) {
-                    if (neighbour.classList.contains('cellMined')) {
-                        numberOfMinedNeighbours++
-                    }
-                }
-                this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
-
-                if (numberOfMinedNeighbours === 0) {
-                    for (const neighbour of neighbours) {
-                        if (!neighbour.classList.contains('cellExposed')) {
-                            await neighbour.click()
-                        }
-                    }
-                }
-            }
-            s._gameStatus = s._checkGameStatus()
-        }
-    }
-
-    /!**
-         * @param s {MineSweeper}
-         * @this {HTMLButtonElement}
-         *!/
-    _cellRightClickHandler (s) {
-        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-            if (this.classList.contains('cellFlagged')) {
-                this.classList.remove('cellFlagged')
-                this.classList.add('cellQuestioned')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
-            } else if (this.classList.contains('cellQuestioned')) {
-                this.classList.remove('cellQuestioned')
-            } else {
-                this.classList.add('cellFlagged')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) - 1).toString()
-            }
-        }
-    }
-
-    _cellEventHandler (cell) {
-        const s = this
-
-        cell.addEventListener('click', s._cellFirstsClickHandler.bind(cell, s))
-        cell.addEventListener('click', s._cellLeftClickHandler.bind(cell, s))
-
-        cell.addEventListener('contextmenu', async function (e) {
-            e.preventDefault()
-        })
-        cell.addEventListener('contextmenu', s._cellFirstsClickHandler.bind(cell, s))
-        cell.addEventListener('contextmenu', s._cellRightClickHandler.bind(cell, s))
-    }
-
-    _smileyClickHandler (s) {
-        s._board.innerHTML = ''
-        s.init()
-    }
-
-    _smileyEventHandler (smiley) {
-        const s = this
-
-        smiley.addEventListener('click', s._smileyClickHandler.bind(smiley, s))
-    }
-        _setSmileyState (state) {
-        const s = this
-
-        switch (state) {
-            case 'happy':
-                s._smiley.src = './images/smiley/happy.png'
-                s._smiley.alt = 'Happy'
-                break
-            case 'sad':
-                s._smiley.src = './images/smiley/sad.png'
-                s._smiley.alt = 'Sad'
-                break
-            case 'bored':
-                s._smiley.src = './images/smiley/bored.png'
-                s._smiley.alt = 'Bored'
-                break
-        }
-    }
-
-    */
 }
 
 class Cell {
-    constructor () {
+    constructor (cords) {
+        this.cords = cords
         this.mined = false
         this.tagged = false
         this.tag = 'none'

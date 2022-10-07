@@ -63,7 +63,9 @@
     <div class="modalContainer">
         <form id="customMockDataForm">
             <div>
-                <label for="customMockDataTextarea"></label><textarea id="customMockDataTextarea" name="MockData" placeholder="Mock data" rows="10" cols="30" required></textarea>
+                <label for="customMockDataTextarea"></label><textarea cols="30" id="customMockDataTextarea"
+                                                                      name="MockData" placeholder="Mock data" required
+                                                                      rows="10"></textarea>
             </div>
             <div>
                 <button id="customMockDataSubmit" name="CreateBoard" type="submit" value="Create">Create Board</button>
@@ -80,13 +82,13 @@
     <tr>
         <td colspan="16" id="status">
             <div id="flagsDiv">
-                <span data-test-id="flagsCounter" id="flagsCounter"></span>
+                <span data-test-id="flagsCounter" id="flagsCounter">0</span>
             </div>
             <div id="smileyDiv">
-                <img alt="smiley" data-test-id="smiley" id="smiley" src="./images/smiley/bored.png">
+                <img alt="Bored" data-test-id="smiley" id="smiley" src="./images/smiley/bored.png">
             </div>
             <div id="timerDiv">
-                <span data-test-id="timer" id="timer"></span>
+                <span data-test-id="timer" id="timer">0</span>
             </div>
         </td>
     </tr>
