@@ -15,6 +15,7 @@ body {
     position: absolute;
     top: 1%;
     left: 1%;
+    text-align: center;
 }
 
 #mineSweeper {
@@ -85,7 +86,6 @@ body {
     background-image: url("../images/question-mark.png");
 }
 
-
 .modal {
     position: fixed;
     width: 100vw;
@@ -123,11 +123,11 @@ body {
 
 .modalClose {
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: 1em;
+    top: 1em;
     outline: none;
     appearance: none;
-    color: red;
+    color: var(--red-salsa);
     background: none;
     border: 0;
     font-weight: bold;
