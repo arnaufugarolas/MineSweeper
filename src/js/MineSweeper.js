@@ -23,6 +23,8 @@ function onLoad () {
 function addEvents () {
     document.getElementById('customRandomForm').addEventListener('submit', customRandomForm)
 
+    document.getElementById('customMockDataForm').addEventListener('submit', customMockDataForm)
+
     document.getElementById('customRandomButton').addEventListener('click', function () {
         document.getElementById('customRandomModal').classList.add('open')
     })
@@ -30,8 +32,6 @@ function addEvents () {
     document.getElementById('customRandomClose').addEventListener('click', function () {
         document.getElementById('customRandomModal').classList.remove('open')
     })
-
-    document.getElementById('customMockDataForm').addEventListener('submit', customMockDataForm)
 
     document.getElementById('customMockDataButton').addEventListener('click', function () {
         document.getElementById('customMockDataModal').classList.add('open')
@@ -97,6 +97,7 @@ class MineSweeper {
                 break
             case 'default':
                 s._flagsCounter = 0
+                s._board = new Array(0)
                 break
         }
 
@@ -218,7 +219,13 @@ class MineSweeper {
             s.init()
         })
         document.getElementById('flagsCounter').innerHTML = s._flagsCounter
-        document.getElementById('status').colSpan = s._board[0].length
+
+        if (s._gameOptions.get('boardType') !== 'default') {
+            document.getElementById('status').colSpan = s._board[0].length
+        } else {
+            document.getElementById('mineSweeper').style.display = 'none'
+            document.getElementById('menu').style.right = '0'
+        }
 
         switch (s._smiley) {
             case 'happy':
@@ -273,7 +280,7 @@ class MineSweeper {
         }
     }
 
-    _cellEventHandler (cell, cellHTML, event) {
+    _cellEventHandler (cell, cellHTML) {
         const s = this
 
         cellHTML.addEventListener('click', s._cellFirstActionEventHandler.bind(s))
