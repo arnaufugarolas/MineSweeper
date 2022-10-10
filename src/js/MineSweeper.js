@@ -23,6 +23,8 @@ function onLoad () {
 function addEvents () {
     document.getElementById('customRandomForm').addEventListener('submit', customRandomForm)
 
+    document.getElementById('customMockDataForm').addEventListener('submit', customMockDataForm)
+
     document.getElementById('customRandomButton').addEventListener('click', function () {
         document.getElementById('customRandomModal').classList.add('open')
     })
@@ -30,8 +32,6 @@ function addEvents () {
     document.getElementById('customRandomClose').addEventListener('click', function () {
         document.getElementById('customRandomModal').classList.remove('open')
     })
-
-    document.getElementById('customMockDataForm').addEventListener('submit', customMockDataForm)
 
     document.getElementById('customMockDataButton').addEventListener('click', function () {
         document.getElementById('customMockDataModal').classList.add('open')
@@ -68,105 +68,75 @@ class MineSweeper {
     constructor (gameOptions) {
         const s = this
 
-        s._board = document.getElementById('board')
-        s._flagsCounter = document.getElementById('flagsCounter')
-        s._timer = document.getElementById('timer')
-        s._smiley = document.getElementById('smiley')
-        s._smileyEventHandler(s._smiley)
+        s._board = []
+        s._flagsCounter = null
+        s._timerInterval = null
+        s._smiley = null
+        s._gameStatus = null
         s._gameOptions = gameOptions
-        s._timerInterval = 0
     }
 
     init () {
         const s = this
-
         s._gameStatus = 'standby'
+
         clearInterval(s._timerInterval)
         s._createBoard()
     }
 
-    _setSmileyState (state) {
-        const s = this
-
-        switch (state) {
-            case 'happy':
-                s._smiley.src = './images/smiley/happy.png'
-                s._smiley.alt = 'Happy'
-                break
-            case 'sad':
-                s._smiley.src = './images/smiley/sad.png'
-                s._smiley.alt = 'Sad'
-                break
-            case 'bored':
-                s._smiley.src = './images/smiley/bored.png'
-                s._smiley.alt = 'Bored'
-                break
-        }
-    }
-
     _createBoard () {
         const s = this
-        const boardType = s._gameOptions.get('boardType')
         const data = s._gameOptions.get('data')
 
-        switch (boardType) {
+        switch (s._gameOptions.get('boardType')) {
             case 'mock':
-                s._createBoardMockData(data)
+                s._board = s._createBoardMockData(data)
                 break
             case 'random':
-                s._createBoardRandom(s._dataToOptionsMap(data))
+                s._board = s._createBoardRandom(s._dataToOptionsMap(data))
                 break
             case 'default':
-                s._flagsCounter.textContent = '0'
+                s._flagsCounter = 0
+                s._board = new Array(0)
                 break
         }
 
-        s._timer.textContent = '0'
-        s._setSmileyState('bored')
+        s._timer = 0
+        s._smiley = 'bored'
+        s._createBoardCalculateValues(s._board)
+        s._printBoardHTML(s._board)
     }
 
     _createBoardRandom (options) {
         const s = this
         const size = options.get('size').split('x')
-        const columnsNumber = parseInt(size[0])
-        const rowsNumber = parseInt(size[1])
+        const board = []
 
-        document.getElementById('status').setAttribute('colspan', columnsNumber.toString())
+        for (let i = 0; i < parseInt(size[1]); i++) {
+            const row = []
 
-        for (let i = 0; i < rowsNumber; i++) {
-            const tr = document.createElement('tr')
-            tr.setAttribute('class', 'row')
-
-            for (let j = 0; j < columnsNumber; j++) {
-                const td = document.createElement('td')
-                const cell = document.createElement('button')
-
-                cell.textContent = '\xa0'
-                cell.classList.add('cell')
-                s._cellEventHandler(cell)
-
-                td.appendChild(cell)
-                tr.appendChild(td)
+            for (let j = 0; j < parseInt(size[0]); j++) {
+                row.push(new Cell([i, j]))
             }
-            s._board.appendChild(tr)
+
+            board.push(...[row])
         }
-        s._createBoardRandomAddMines(options)
+        s._createBoardRandomAddMines(board, options.get('mines'))
+
+        return board
     }
 
-    _createBoardRandomAddMines (options) {
+    _createBoardRandomAddMines (board, mines) {
         const s = this
-        const columnsNumber = parseInt(options.get('size').split('x')[0])
-        const rowsNumber = parseInt(options.get('size').split('x')[1])
-        let mines = options.get('mines')
-        s._flagsCounter.textContent = mines
+        s._flagsCounter = mines
 
         while (mines > 0) {
-            const row = Math.floor(Math.random() * rowsNumber)
-            const column = Math.floor(Math.random() * columnsNumber)
-            const cell = s._board.rows[row].cells[column].firstChild
+            const row = Math.floor(Math.random() * board.length)
+            const column = Math.floor(Math.random() * board[0].length)
+            const cell = board[row][column]
 
-            if (!cell.classList.contains('cellMined')) {
-                cell.classList.add('cellMined')
+            if (!cell.mined) {
+                cell.mined = true
                 mines--
             }
         }
@@ -188,172 +158,266 @@ class MineSweeper {
     _createBoardMockData (data) {
         const s = this
         let numberOfMines = 0
-        data = data.replace(/[{}]/g, '')
-        const rows = data.split('^')
+        const board = []
+        const mockedBoard = data.replace(/[{}]/g, '').split('^')
 
-        document.getElementById('status').setAttribute('colspan', rows[0].length.toString())
-
-        for (const row of rows) {
-            const tr = document.createElement('tr')
-            tr.setAttribute('class', 'row')
-
-            for (const column of row) {
-                const td = document.createElement('td')
-                const cell = document.createElement('button')
-
-                cell.textContent = '\xa0'
-                cell.classList.add('cell')
-                if (column === 'M') {
-                    cell.classList.add('cellMined')
-                    numberOfMines++
-                }
-                s._cellEventHandler(cell)
-
-                td.appendChild(cell)
-                tr.appendChild(td)
-            }
-            s._board.appendChild(tr)
+        for (const row of mockedBoard) {
+            mockedBoard[mockedBoard.indexOf(row)] = row.split('')
         }
-        s._flagsCounter.textContent = numberOfMines.toString()
+
+        for (let i = 0; i < mockedBoard.length; i++) {
+            const row = []
+
+            for (let j = 0; j < mockedBoard[0].length; j++) {
+                const cell = new Cell([i, j])
+                if (mockedBoard[i][j].match(/[MFQ]/)) {
+                    numberOfMines++
+                    cell.mined = true
+                }
+                if (mockedBoard[i][j].toUpper === 'F') {
+                    cell.tagged = true
+                    cell.tag = 'flag'
+                } else if (mockedBoard[i][j].toUpper === 'Q') {
+                    cell.tagged = true
+                    cell.tag = 'question'
+                }
+
+                row.push(cell)
+            }
+
+            board.push(...[row])
+        }
+
+        s._flagsCounter = numberOfMines
+        return board
+    }
+
+    _createBoardCalculateValues (board) {
+        for (const row of board) {
+            for (const cell of row) {
+                for (let i = -1; i < 2; i++) {
+                    for (let j = -1; j < 2; j++) {
+                        if (board[board.indexOf(row) + i] !== undefined && board[board.indexOf(row) + i][row.indexOf(cell) + j] !== undefined) {
+                            if (board[board.indexOf(row) + i][row.indexOf(cell) + j].mined) {
+                                cell.value++
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    _printBoardHTML () {
+        const s = this
+        const boardHTML = document.getElementById('board')
+        const smiley = document.getElementById('smiley')
+
+        boardHTML.innerHTML = ''
+        document.getElementById('timer').innerHTML = s._timer
+        smiley.addEventListener('click', function () {
+            s.init()
+        })
+        document.getElementById('flagsCounter').innerHTML = s._flagsCounter
+
+        if (s._gameOptions.get('boardType') !== 'default') {
+            document.getElementById('status').colSpan = s._board[0].length
+        } else {
+            document.getElementById('mineSweeper').style.display = 'none'
+            document.getElementById('menu').style.right = '0'
+        }
+
+        switch (s._smiley) {
+            case 'happy':
+                smiley.src = './images/smiley/happy.png'
+                smiley.alt = 'Happy'
+                break
+            case 'sad':
+                smiley.src = './images/smiley/sad.png'
+                smiley.alt = 'Sad'
+                break
+            case 'bored':
+                smiley.src = './images/smiley/bored.png'
+                smiley.alt = 'Bored'
+                break
+        }
+
+        for (const row of s._board) {
+            const rowHTML = document.createElement('tr')
+
+            rowHTML.classList.add('row')
+            for (const cell of row) {
+                const cellContainerHTML = document.createElement('td')
+                const cellHTML = document.createElement('button')
+
+                cellHTML.classList.add('cell')
+
+                if (cell.revealed) {
+                    cellHTML.classList.add('cellExposed')
+                    if (cell.mined) {
+                        cellHTML.classList.add('cellMined')
+                    } else {
+                        cellHTML.innerHTML = cell.value > 0 ? cell.value : '\xa0'
+                    }
+                } else if (cell.tagged) {
+                    switch (cell.tag) {
+                        case 'flag':
+                            cellHTML.classList.add('cellFlagged')
+                            break
+                        case 'question':
+                            cellHTML.classList.add('cellQuestioned')
+                            break
+                    }
+                    cellHTML.classList.add(cell.tag)
+                }
+
+                s._cellEventHandler(cell, cellHTML)
+
+                cellContainerHTML.appendChild(cellHTML)
+                rowHTML.appendChild(cellContainerHTML)
+            }
+            boardHTML.appendChild(rowHTML)
+        }
+    }
+
+    _cellEventHandler (cell, cellHTML) {
+        const s = this
+
+        cellHTML.addEventListener('click', s._cellFirstActionEventHandler.bind(s))
+        cellHTML.addEventListener('click', s._cellExposeEventHandler.bind(cell, s))
+        cellHTML.addEventListener('contextmenu', s._cellFirstActionEventHandler.bind(s))
+        cellHTML.addEventListener('contextmenu', s._cellTagEventHandler.bind(cell, s))
+    }
+
+    /**
+     * @this {Cell}
+     */
+    _cellTagEventHandler (s, e) {
+        e.preventDefault()
+
+        if (s._gameStatus === 'playing' && !this.revealed) {
+            if (this.tagged) {
+                if (this.tag === 'flag') {
+                    this.tag = 'question'
+                    s._flagsCounter++
+                } else {
+                    this.tagged = false
+                    this.tag = 'none'
+                }
+            } else {
+                this.tagged = true
+                this.tag = 'flag'
+                s._flagsCounter--
+            }
+            s._printBoardHTML()
+        }
+    }
+
+    _cellFirstActionEventHandler () {
+        const s = this
+
+        if (s._gameStatus === 'standby') {
+            s._gameStatus = 'playing'
+            s._timerInterval = setInterval(function () {
+                if (s._gameStatus === 'playing') {
+                    s._timer++
+                    document.getElementById('timer').innerHTML = s._timer
+                } else {
+                    clearInterval(s._timerInterval)
+                }
+            }, 1000)
+        }
+    }
+
+    /**
+     * @this {Cell}
+     */
+    _cellExposeEventHandler (s) {
+        const cell = this
+
+        if (s._gameStatus === 'playing') {
+            if (cell.mined) {
+                s._gameStatus = 'lost'
+                for (const row of s._board) {
+                    for (const cell of row) {
+                        if (cell.mined) {
+                            cell.revealed = true
+                        }
+                    }
+                }
+            }
+            s._cellExpose(cell)
+            s._checkGameStatus()
+            s._printBoardHTML()
+        }
+    }
+
+    _cellExpose (cell) {
+        const s = this
+        cell.revealed = true
+        if (cell.value !== 0 || cell.mined) {
+            return
+        }
+
+        for (let i = -1; i < 2; i++) {
+            for (let j = -1; j < 2; j++) {
+                if (cell.cords[0] + i >= 0 && cell.cords[0] + i < s._board.length) {
+                    if (cell.cords[1] + j >= 0 && cell.cords[1] + j < s._board[0].length) {
+                        const neighbour = s._board[cell.cords[0] + i][cell.cords[1] + j]
+
+                        if (!neighbour.revealed) {
+                            neighbour.revealed = true
+                            s._cellExpose(neighbour)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     _checkGameStatus () {
         const s = this
-        const exposedCells = document.getElementsByClassName('cellExposed')
-        const numberOfMines = document.getElementsByClassName('cellMined').length
-        const numberOfCells = document.getElementsByClassName('cell').length
+        const exposedCells = []
+        const minedCells = []
+        let numberOfCells = 0
 
-        for (const cell of exposedCells) {
-            if (cell.classList.contains('cellMined')) {
-                const mines = document.getElementsByClassName('cellMined')
-
-                for (const mine of mines) {
-                    mine.classList.add('cellExposed')
+        for (const row of s._board) {
+            for (const cell of row) {
+                if (cell.revealed) {
+                    exposedCells.push(...[cell])
                 }
-                s._setSmileyState('sad')
-                clearInterval(s._timerInterval)
+                if (cell.mined) {
+                    minedCells.push(...[cell])
+                }
+                numberOfCells++
+            }
+        }
 
+        for (const mine of minedCells) {
+            if (mine.revealed) {
+                s._smiley = 'sad'
+                clearInterval(s._timerInterval)
                 return 'lost'
             }
         }
 
-        if (exposedCells.length === numberOfCells - numberOfMines) {
-            s._setSmileyState('happy')
+        if (exposedCells.length === numberOfCells - minedCells.length) {
+            s._smiley = 'happy'
             clearInterval(s._timerInterval)
             return 'win'
         }
 
         return 'playing'
     }
+}
 
-    async _getCellNeighbours (cell) {
-        const s = this
-        const cellRow = cell.parentNode.parentNode
-        const cellColumn = cell.parentNode
-        const cellRowNumber = cellRow.rowIndex - 1
-        const cellColumnNumber = cellColumn.cellIndex
-        const neighbours = []
-
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) {
-                    continue
-                }
-                const row = cellRowNumber + i
-                const column = cellColumnNumber + j
-
-                if (row >= 0 && row < s._board.rows.length && column >= 0 && column < s._board.rows[row].cells.length) {
-                    neighbours.push(s._board.rows[row].cells[column].firstChild)
-                }
-            }
-        }
-
-        return neighbours
-    }
-
-    _cellFirstsClickHandler (s) {
-        if (s._gameStatus === 'standby') {
-            s._gameStatus = 'playing'
-            s._timerInterval = setInterval(function () {
-                s._timer.textContent = (parseInt(s._timer.textContent) + 1).toString()
-            }, 1000)
-        }
-    }
-
-    async _cellLeftClickHandler (s) {
-        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-            this.classList.add('cellExposed')
-
-            if (this.classList.contains('cellFlagged')) {
-                this.classList.remove('cellFlagged')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
-            } else if (this.classList.contains('cellQuestioned')) {
-                this.classList.remove('cellQuestioned')
-            }
-
-            if (!this.classList.contains('cellMined')) {
-                const neighbours = await s._getCellNeighbours(this)
-                let numberOfMinedNeighbours = 0
-
-                for (const neighbour of neighbours) {
-                    if (neighbour.classList.contains('cellMined')) {
-                        numberOfMinedNeighbours++
-                    }
-                }
-                this.textContent = numberOfMinedNeighbours === 0 ? '\xa0' : numberOfMinedNeighbours.toString()
-
-                if (numberOfMinedNeighbours === 0) {
-                    for (const neighbour of neighbours) {
-                        if (!neighbour.classList.contains('cellExposed')) {
-                            await neighbour.click()
-                        }
-                    }
-                }
-            }
-            s._gameStatus = s._checkGameStatus()
-        }
-    }
-
-    /**
-         * @param s {MineSweeper}
-         * @this {HTMLButtonElement}
-         */
-    _cellRightClickHandler (s) {
-        if (s._gameStatus === 'playing' && !this.classList.contains('cellExposed')) {
-            if (this.classList.contains('cellFlagged')) {
-                this.classList.remove('cellFlagged')
-                this.classList.add('cellQuestioned')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) + 1).toString()
-            } else if (this.classList.contains('cellQuestioned')) {
-                this.classList.remove('cellQuestioned')
-            } else {
-                this.classList.add('cellFlagged')
-                s._flagsCounter.textContent = (parseInt(s._flagsCounter.textContent) - 1).toString()
-            }
-        }
-    }
-
-    _cellEventHandler (cell) {
-        const s = this
-
-        cell.addEventListener('click', s._cellFirstsClickHandler.bind(cell, s))
-        cell.addEventListener('click', s._cellLeftClickHandler.bind(cell, s))
-
-        cell.addEventListener('contextmenu', async function (e) {
-            e.preventDefault()
-        })
-        cell.addEventListener('contextmenu', s._cellFirstsClickHandler.bind(cell, s))
-        cell.addEventListener('contextmenu', s._cellRightClickHandler.bind(cell, s))
-    }
-
-    _smileyClickHandler (s) {
-        s._board.innerHTML = ''
-        s.init()
-    }
-
-    _smileyEventHandler (smiley) {
-        const s = this
-
-        smiley.addEventListener('click', s._smileyClickHandler.bind(smiley, s))
+class Cell {
+    constructor (cords) {
+        this.cords = cords
+        this.mined = false
+        this.tagged = false
+        this.tag = 'none'
+        this.revealed = false
+        this.value = 0
     }
 }

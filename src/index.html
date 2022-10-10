@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="menu">
-    <div id="menuTitle">MineSweeper</div>
+    <h2 id="menuTitle">MineSweeper</h2>
     <div>
         <a href="?random={size=8x8,mines=10}">
             <button id="btn8x8">8x8 10 Mines</button>
@@ -20,7 +20,7 @@
         </a>
     </div>
     <div>
-        <a href="?random={size=30x16,mines=40}">
+        <a href="?random={size=30x16,mines=99}">
             <button id="btn30x16">30x16 99 Mines</button>
         </a>
     </div>
@@ -63,7 +63,9 @@
     <div class="modalContainer">
         <form id="customMockDataForm">
             <div>
-                <label for="customMockDataTextarea"></label><textarea id="customMockDataTextarea" name="MockData" placeholder="Mock data" rows="10" cols="30" required></textarea>
+                <label for="customMockDataTextarea"></label><textarea cols="30" id="customMockDataTextarea"
+                                                                      name="MockData" placeholder="Mock data" required
+                                                                      rows="10"></textarea>
             </div>
             <div>
                 <button id="customMockDataSubmit" name="CreateBoard" type="submit" value="Create">Create Board</button>
@@ -78,15 +80,15 @@
 <table id="mineSweeper">
     <thead>
     <tr>
-        <td colspan="16" id="status">
+        <td id="status">
             <div id="flagsDiv">
-                <span data-test-id="flagsCounter" id="flagsCounter"></span>
+                <span data-test-id="flagsCounter" id="flagsCounter">0</span>
             </div>
             <div id="smileyDiv">
-                <img alt="smiley" data-test-id="smiley" id="smiley" src="./images/smiley/bored.png">
+                <img alt="Bored" data-test-id="smiley" id="smiley" src="./images/smiley/bored.png">
             </div>
             <div id="timerDiv">
-                <span data-test-id="timer" id="timer"></span>
+                <span data-test-id="timer" id="timer">0</span>
             </div>
         </td>
     </tr>
