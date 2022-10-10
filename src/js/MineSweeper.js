@@ -214,7 +214,9 @@ class MineSweeper {
 
         boardHTML.innerHTML = ''
         document.getElementById('timer').innerHTML = s._timer
-        smiley.addEventListener('click', function () { s.init() })
+        smiley.addEventListener('click', function () {
+            s.init()
+        })
         document.getElementById('flagsCounter').innerHTML = s._flagsCounter
         document.getElementById('status').colSpan = s._board[0].length
 
@@ -322,13 +324,20 @@ class MineSweeper {
 
     /**
      * @this {Cell}
-    */
+     */
     _cellExposeEventHandler (s) {
         const cell = this
 
         if (s._gameStatus === 'playing') {
             if (cell.mined) {
                 s._gameStatus = 'lost'
+                for (const row of s._board) {
+                    for (const cell of row) {
+                        if (cell.mined) {
+                            cell.revealed = true
+                        }
+                    }
+                }
             }
             s._cellExpose(cell)
             s._checkGameStatus()
@@ -339,7 +348,9 @@ class MineSweeper {
     _cellExpose (cell) {
         const s = this
         cell.revealed = true
-        if (cell.value !== 0 || cell.mined) { return }
+        if (cell.value !== 0 || cell.mined) {
+            return
+        }
 
         for (let i = -1; i < 2; i++) {
             for (let j = -1; j < 2; j++) {
