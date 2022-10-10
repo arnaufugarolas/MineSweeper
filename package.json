@@ -2,15 +2,23 @@
   "devDependencies": {
     "@cucumber/cucumber": "^8.5.3",
     "@playwright/test": "^1.25.2",
-    "eslint": "^8.23.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.5",
+    "eslint": "^8.25.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-config-standard-jsx": "^11.0.0",
     "eslint-plugin-promise": "^6.0.1",
+    "eslint-plugin-react": "^7.31.9",
     "playwright": "^1.25.2"
   },
   "scripts": {
     "test:e2e": "cucumber-js --require cucumber.conf.js --require tests/steps/**/*.steps.js --tags \"not @Manual\" --parallel 4",
     "test:e2e:working": "cucumber-js --require cucumber.conf.js --require tests/steps/**/*.steps.js --tags \"@Working\" --parallel 4",
     "test:e2e:finished": "cucumber-js --require cucumber.conf.js --require tests/steps/**/*.steps.js --tags \"@Finished\" --parallel 4"
+  },
+  "eslintConfig": {
+    "extends": "standard",
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    }
   }
 }

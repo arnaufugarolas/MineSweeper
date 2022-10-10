@@ -5,25 +5,25 @@ setDefaultTimeout(8000)
 
 // launch the browser
 BeforeAll(async () => {
-    global.browser = await chromium.launch({
-        headless: true,
-        slowMo: 1
-    })
+  global.browser = await chromium.launch({
+    headless: true,
+    slowMo: 1
+  })
 })
 
 // close the browser
 AfterAll(async () => {
-    await global.browser.close()
+  await global.browser.close()
 })
 
 // Create a new browser context and page per scenario
 Before(async () => {
-    global.context = await global.browser.newContext()
-    global.page = await global.context.newPage()
+  global.context = await global.browser.newContext()
+  global.page = await global.context.newPage()
 })
 
 // Cleanup after each scenario
 After(async () => {
-    await global.page.close()
-    await global.context.close()
+  await global.page.close()
+  await global.context.close()
 })
